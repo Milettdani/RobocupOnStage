@@ -1,6 +1,6 @@
 const int solenoid[8] = { A0, A1, A2, A3, A4, A5, 11, 12 };
 const int dirPin = 6, stepPin = 7, enPin = 5;
-const int firstMelodyBPM = 70;
+const int firstMelodyBPM = 70, secondMelodyBPM = 110;
 
 void setup() {
   Serial.begin(9600);
@@ -11,9 +11,8 @@ void setup() {
 
 void loop() {
   delay(5000);
-  PrepareMelodyOne();
-  PlayMelodyOne();
-  Move(-20);
+  //Move(20); PlayMelodyOne(); Move(-20);*/
+  Move(24); PlayMelodyTwo();
   digitalWrite(enPin, HIGH);
   while(true) { }
 }
@@ -38,11 +37,11 @@ float Move(int value) {
 }
                                                                                                                                 //
 void PrepareMelodyOne() {
-  Move(20);
+  
 }
 void PlayMelodyOne() {
   digitalWrite(solenoid[7], HIGH); Wait(firstMelodyBPM, 0.85);                                  Serial.println("F#5");          //
-  digitalWrite(solenoid[7], LOW);  Wait(firstMelodyBPM, 0.15);                                                           
+  digitalWrite(solenoid[7], LOW);  Wait(firstMelodyBPM, 0.15);
   digitalWrite(solenoid[7], HIGH); Wait(firstMelodyBPM, 0.85);                                  Serial.println("F#5");
   digitalWrite(solenoid[7], LOW);  Wait(firstMelodyBPM, 0.15, Move(-1));
   digitalWrite(solenoid[6], HIGH); Wait(firstMelodyBPM, 0.85);                                  Serial.println("E5");
@@ -247,4 +246,29 @@ void PlayMelodyOne() {
   digitalWrite(solenoid[5], LOW);  Wait(firstMelodyBPM, 0.15, Move(-1));
   digitalWrite(solenoid[7], HIGH); Wait(firstMelodyBPM, 0.25);                                  Serial.println("D5");
   digitalWrite(solenoid[7], LOW);
+}
+void PlayMelodyTwo() {
+  digitalWrite(solenoid[0], HIGH); Wait(secondMelodyBPM, 0.1);                                  Serial.println("F#5");          //
+  digitalWrite(solenoid[0], LOW);  Wait(firstMelodyBPM, 0.15, Move(-1));
+  digitalWrite(solenoid[2], HIGH); Wait(secondMelodyBPM, 0.1);                                  Serial.println("F#5");          //
+  digitalWrite(solenoid[2], LOW);  Wait(firstMelodyBPM, 0.15, Move(-1));
+  digitalWrite(solenoid[3], HIGH); Wait(firstMelodyBPM, 0.25);                                  Serial.println("D5");
+  digitalWrite(solenoid[3], LOW);
+  digitalWrite(solenoid[1], HIGH); Wait(secondMelodyBPM, 0.1);                                  Serial.println("F#5");          //
+  digitalWrite(solenoid[1], LOW);  Wait(firstMelodyBPM, 0.15, Move(1));
+  digitalWrite(solenoid[5], HIGH); Wait(firstMelodyBPM, 0.5);                                  Serial.println("D5");
+  digitalWrite(solenoid[5], LOW);
+  digitalWrite(solenoid[5], HIGH); Wait(secondMelodyBPM, 0.35);                                  Serial.println("F#5");          //
+  digitalWrite(solenoid[5], LOW);  Wait(firstMelodyBPM, 0.15, Move(1));
+  digitalWrite(solenoid[3], HIGH); Wait(firstMelodyBPM, 1);                                  Serial.println("D5");
+  digitalWrite(solenoid[3], LOW);
+
+  digitalWrite(solenoid[0], HIGH); Wait(secondMelodyBPM, 0.1);                                  Serial.println("F#5");          //
+  digitalWrite(solenoid[0], LOW);  Wait(firstMelodyBPM, 0.15, Move(-1));
+  digitalWrite(solenoid[2], HIGH); Wait(secondMelodyBPM, 0.1);                                  Serial.println("F#5");          //
+  digitalWrite(solenoid[2], LOW);  Wait(firstMelodyBPM, 0.15, Move(-1));
+  digitalWrite(solenoid[3], HIGH); Wait(firstMelodyBPM, 0.25);                                  Serial.println("D5");
+  digitalWrite(solenoid[3], LOW);
+  digitalWrite(solenoid[1], HIGH); Wait(secondMelodyBPM, 0.1);                                  Serial.println("F#5");          //
+  digitalWrite(solenoid[1], LOW);  Wait(firstMelodyBPM, 0.15, Move(1));
 }
