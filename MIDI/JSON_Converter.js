@@ -62,7 +62,7 @@ input.addEventListener('change', function (e) {
 					}
 				} else {
 					if (p == true) {
-						t[i] = "double p" + "[" + Object.size(parsedMusic.tracks[i].notes) * 4 + "] = {"
+						t[i] = "double p" + "[" + Object.size(parsedMusic.tracks[i].notes) * 3 + "] = {"
 						//console.log("int t" + i + "[" + Object.size(parsedMusic.tracks[i].notes) + "] = ")
 						//Creat elements
 						var toNext = 0
@@ -120,7 +120,7 @@ input.addEventListener('change', function (e) {
 							//n[1] = nName[nName.length - 1]
 							//console.log(estr)
 
-							t[i] += o + ", " + n + ", " + toNext.toFixed(2) + ", " + parsedMusic.tracks[i].notes[j].duration.toFixed(3);	// [o], [n], [time to next note in s], [duration of note in s]
+							t[i] += parsedMusic.tracks[i].notes[j].midi + ", " + toNext.toFixed(2) + ", " + parsedMusic.tracks[i].notes[j].duration.toFixed(3);	// [midi number of note], [time to next note in s], [duration of note in s]
 							//console.log(t[i])
 						}
 						p = false
