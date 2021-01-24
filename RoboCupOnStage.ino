@@ -19,6 +19,7 @@ void loop() {
 	int counter = 0;
 	int len = sizeof(p)/sizeof(double);
 	int pos = 24;
+	ul del;
 	while (counter < len/3) {
 		int n1 = counter * 3;
 		int n2 = (counter+1) * 3;
@@ -63,7 +64,6 @@ void loop() {
 
 ul move(int value)
 {
-	ul startTime = millis();
 	if(value == 0) digitalWrite(enPin, HIGH);
 	else if(value < 0) digitalWrite(dirPin, HIGH);
 	else if(value > 0) digitalWrite(dirPin, LOW);
@@ -74,7 +74,7 @@ ul move(int value)
 		digitalWrite(stepPin, LOW);
 		delayMicroseconds(320);
 	}
-	return millis() - startTime;
+	return millis();
 }
 
 
@@ -85,21 +85,22 @@ bool isBlack(int N) //Checks if given note is black
 	else return false;
 }
 
-int halfNotes(a, b) //Calculates distance between two notes in "half-notes".    //ARGS: a = first note; b = second note
+int halfNotes(int a, int b) //Calculates distance between two notes in "half-notes".    //ARGS: a = first note; b = second note
 {
-	m = abs(b-a);
+	int m = abs(b-a);
 	int c1 = 4 - a%12;
 	if (c1 < 0) c1 = 12 + c1;
 	int c2 = 12 - a%12;
 	
-	if (m > c1) m += ceil(m/12);
-	if (m > c2) m += ceil(m/12);
+	int om = m;
+	if (om > c1) m += ceil((float)om/12);
+	if (om > c2) m += ceil((float)om/12);
 	
 	if (b<a) m = -m;
 	return m;
 }
 
-void toNext(int cp, int n1, int n2, int n3) //Finds next position of piano and moves there.   //ARGS: current position; next note; note after next note; note after note after next note
+ul toNext(int cp, int n1, int n2, int n3) //Finds next position of piano and moves there.   //ARGS: current position; next note; note after next note; note after note after next note
 {
 	Max = max(max(n1, n2), n3);
 	Min = min(min(n1, n2), n3);
@@ -119,17 +120,21 @@ void toNext(int cp, int n1, int n2, int n3) //Finds next position of piano and m
 		else a = min(n1, n2);
 	}
 
-	move(halfNotes(cp, a)-6);
+	del = move(halfNotes(cp, a)-6);
+	return pos;
 }
 
 int play(int pos, int n[8], bool chord)
 {
+	ul ct = del;
 	int c = n[0]/3;
 	if (!chord) {
 		nn[3] = {n[0], n[1], n[2]}; //Index of 1st 3 midi values
 		for (int no : nn) {
 			int note = p[no]; //midi value
 			if (halfNotes(pos, note)/2 <= 8) {
+				delay(p[no+1] - (double)(millis()-ct));
+				ct = millis();
 				digitalWrite(solenoid[halfNotes(pos, note)/2], HIGH);
 				delay(p[no+2]); // duration
 				digitalWrite(solenoid[halfNotes(pos, note)/2], LOW);
@@ -147,8 +152,10 @@ int play(int pos, int n[8], bool chord)
 		}
 		float durations[counter];
 		float m = 0.0;
+		delay(p[n[0]+1] - (double)(millis()-ct));
+		ct = millis();
 		for (int i = 0; i<counter; i++) {	//Hit solenoids
-			durations[i] = p[n[i+2]];
+			durations[i] = p[n[i]+2];
 			m = max(m, durations[i]);
 			digitalWrite(solenoid[halfNotes(pos, p[n[i]])/2], HIGH);
 		}
