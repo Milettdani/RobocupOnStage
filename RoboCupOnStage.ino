@@ -3,23 +3,19 @@ const int solenoid[8] = { A0, A1, A2, A3, A4, A5, 11, 12 };
 const int dirPin = 6, stepPin = 7, enPin = 5;
 const int BPM1 = 70, BPM2 = 110;
 
+ul del;
+
 void setup() {
 	Serial.begin(9600);
 
 	for (int i = 0; i < 8; i++) { pinMode(solenoid[i], OUTPUT); }
 	pinMode(stepPin, OUTPUT); pinMode(dirPin, OUTPUT); pinMode(enPin, OUTPUT);
-}
 
-void loop() {
 	delay(5000);
-	/*move(20); PlayMelodyOne(); move(-20);
-	move(24); PlayMelodyTwo();*/
-
 	//  Play song 1
 	int counter = 0;
 	int len = sizeof(p)/sizeof(double);
 	int pos = 24;
-	ul del;
 	while (counter < len/3) {
 		int n1 = counter * 3;
 		int n2 = (counter+1) * 3;
@@ -62,7 +58,12 @@ void loop() {
 	digitalWrite(enPin, HIGH);
 }
 
-ul move(int value)
+void loop() {
+	/*move(20); PlayMelodyOne(); move(-20);
+	move(24); PlayMelodyTwo();*/
+}
+
+void move(int value)
 {
 	if(value == 0) digitalWrite(enPin, HIGH);
 	else if(value < 0) digitalWrite(dirPin, HIGH);
@@ -74,7 +75,7 @@ ul move(int value)
 		digitalWrite(stepPin, LOW);
 		delayMicroseconds(320);
 	}
-	return millis();
+	del = millis();
 }
 
 
@@ -100,28 +101,32 @@ int halfNotes(int a, int b) //Calculates distance between two notes in "half-not
 	return m;
 }
 
-ul toNext(int cp, int n1, int n2, int n3) //Finds next position of piano and moves there.   //ARGS: current position; next note; note after next note; note after note after next note
+int toMidi(int m, int h)	//Finds midi-value of note that is [h] half notes away from midi note [m]
+{
+
+}
+
+int toNext(int cp, int n1, int n2, int n3)	//Finds next position of piano and moves there.   //ARGS: current position; next note; note after next note; note after note after next note
 {
 	Max = max(max(n1, n2), n3);
 	Min = min(min(n1, n2), n3);
 	int a;
 
-	if (Max-Min <= 12) {
-		a = (Max-Min)/2;
-		if (isBlack(Min + a) != isBlack(n1)) {
-			if (a-Min > Max-a) a -= 1;
+	if (Max - Min <= 12) {
+		a = halfNotes(Min, Max)/2 -6;
+		if (isBlack(toMidi(Min, a)) != isBlack(n1)) {
+			if (halfNotes(Min, toMidi(Min, a+6)) >= halfNotes(toMidi(Min, a+6), Max)) a -= 1;
 			else a += 1;
 		}
-	} else if (abs(n1-n2) > 12) {
-		if (n1>n2) a = n1-7;
-		else a = n1;
+	} else if (abs(n1-n2) <= 12) {
+		if (n3 >= max(n1, n2)) a = 0;
+		else a = halfNotes(n3, max(n1, n2)) -14;
 	} else {
-		if (n3 < n1) a = max(n1, n2)-7;
-		else a = min(n1, n2);
+		if (n2>n1) a = halfNotes(min(n1, n3), n1);
+		else a = halfNotes(min(n2, n3), n1) -14;
 	}
-
-	del = move(halfNotes(cp, a)-6);
-	return pos;
+	move(halfNotes(cp, Min)+a);
+	return toMidi(Min, a);	//New position
 }
 
 int play(int pos, int n[8], bool chord)
