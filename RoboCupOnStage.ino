@@ -94,8 +94,8 @@ int halfNotes(int a, int b) //Calculates distance between two notes in "half-not
 	int c2 = 12 - a%12;
 	
 	int om = m;
-	if (om > c1) m += ceil((float)om/12);
-	if (om > c2) m += ceil((float)om/12);
+	if (om > c1) m += ceil((float)om/(14+c1));
+	if (om > c2) m += ceil((float)om/(14+c2));
 	
 	if (b<a) m = -m;
 	return m;
@@ -103,7 +103,21 @@ int halfNotes(int a, int b) //Calculates distance between two notes in "half-not
 
 int toMidi(int m, int h)	//Finds midi-value of note that is [h] half notes away from midi note [m]
 {
-
+    int cc1 = 4;
+    int cc2 = 12;
+    if (h<0) {cc1 = 0; cc2 = 8;}
+    int c1 = cc1 - m%12;
+    if (c1<0) c1 = 12 + c1;
+    int c2 = cc2 - m%12;
+    if (c2<0) c2 = 12 + c2;
+    
+    int hh = abs(h);
+    int oh = hh;
+    if (oh>c1) hh -= ceil((float)oh/(14+c1));
+    if (oh>c2) hh -= ceil((float)oh/(14+c2));
+    
+    if (h<0) hh = -hh;
+    return m + hh;
 }
 
 int toNext(int cp, int n1, int n2, int n3)	//Finds next position of piano and moves there.   //ARGS: current position; next note; note after next note; note after note after next note
