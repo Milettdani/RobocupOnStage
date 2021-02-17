@@ -1,10 +1,10 @@
 #define ul unsigned long
 const int solenoid[8] = { A0, A1, A2, A3, A4, A5, 11, 12 };
 const int dirPin = 6, stepPin = 7, enPin = 5;
-const int BPM1 = 70, BPM2 = 110;
 
 ul del;
 
+//ADD: check if last 3 or less notes - if so load last notes into toNext
 void setup() {
 	Serial.begin(9600);
 
@@ -120,6 +120,7 @@ int toMidi(int m, int h)	//Finds midi-value of note that is [h] half notes away 
     return m + hh;
 }
 
+// ADD: don't move if in position for next notes
 int toNext(int cp, int n1, int n2, int n3)	//Finds next position of piano and moves there.   //ARGS: current position; next note; note after next note; note after note after next note
 {
 	Max = max(max(n1, n2), n3);
@@ -148,7 +149,7 @@ int play(int pos, int n[8], bool chord)
 	ul ct = del;
 	int c = n[0]/3;
 	if (!chord) {
-		nn[3] = {n[0], n[1], n[2]}; //Index of 1st 3 midi values
+		int nn[3] = {n[0], n[1], n[2]}; //Index of 1st 3 midi values
 		for (int no : nn) {
 			int note = p[no]; //midi value
 			if (halfNotes(pos, note)/2 <= 8) {
