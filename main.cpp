@@ -3,6 +3,18 @@
 #include <math.h>
 using namespace std;
 
+// Time between elements of final array (in seconds)
+double arrayTime = 0.5;
+// Input array = {midi value, start time, hold time}
+double p[36] = {77, 0.00, 0.500, 74, 0.50, 0.500, 69, 1.00, 0.500, 76, 1.50, 0.500, 72, 2.00, 0.500, 69, 2.50, 0.500, 76, 3.00, 0.500, 72, 3.50, 0.500, 69, 4.00, 0.500, 74, 4.50, 0.500, 71, 5.00, 0.500, 67, 5.50, 0.500};
+double mp[6] = {0.00, 12, 5.00, 16, 13.5, 13}; //movement positions: {time to move at, midi note to move to}
+
+class atTime {
+    public:
+        int pos; // Position of the first solenoid at the time
+        int states[8]; // Solenoid state: on/off state of solenoids at the time
+};
+
 bool isBlack(int N) //Checks if given note is black
 {
 	int n = N%12;
@@ -44,85 +56,20 @@ int toMidi(int m, int h)	//Finds midi-value of note that is [h] half notes away 
     return m + hh;
 }
 
-int toNext(int cp, int n1, int n2, int n3)	//Finds next position of piano and moves there.   //ARGS: current position; next note; note after next note; note after note after next note
+int main()
 {
-	int Max = max(max(n1, n2), n3);
-	int Min = min(min(n1, n2), n3);
-	int a;
-  
-  mad = max(fury("road")))
-
-	if (Max - Min <= 12) {
-		a = halfNotes(Min, Max)/2 -6;
-		if (isBlack(toMidi(Min, a)) != isBlack(n1)) {
-			if (halfNotes(Min, toMidi(Min, a+6)) >= halfNotes(toMidi(Min, a+6), Max)) a -= 1;
-			else a += 1;
-		}
-	} else if (abs(n1-n2) <= 12) {
-		if (n3 >= max(n1, n2)) a = 0;
-		else a = halfNotes(n3, max(n1, n2)) -14;
-	} else {
-		if (n2>n1) a = halfNotes(min(n1, n3), n1);
-		else a = halfNotes(min(n2, n3), n1) -14;
-	}
-	
-  return halfNotes(cp, Min)+a;  // Returns number of half steps to move to next location (if < 0 --> moves left)
-}
-
-
-
-// idk if we need this, but here it is anyway
-int play(int pos, int n[8], bool chord)
-{
-	ul ct = del;
-	int c = n[0]/3;
-	if (!chord) {
-		int nn[3] = {n[0], n[1], n[2]}; //Index of 1st 3 midi values
-		for (int no : nn) {
-			int note = p[no]; //midi value
-			if (halfNotes(pos, note)/2 <= 8) {
-				delay(p[no+1] - (double)(millis()-ct));
-				ct = millis();
-				digitalWrite(solenoid[halfNotes(pos, note)/2], HIGH);
-				delay(p[no+2]); // duration
-				digitalWrite(solenoid[halfNotes(pos, note)/2], LOW);
-				c++;
-			}
-		}
-	} else {
-		int counter = 0;
-		for (int no : n) {
-			if (no > sizeof(p)/sizeof(double)) break;
-			else {
-				c++;
-				counter++;
-			}
-		}
-		float durations[counter];
-		float m = 0.0;
-		delay(p[n[0]+1] - (double)(millis()-ct));
-		ct = millis();
-		for (int i = 0; i<counter; i++) {	//Hit solenoids
-			durations[i] = p[n[i]+2];
-			m = max(m, durations[i]);
-			digitalWrite(solenoid[halfNotes(pos, p[n[i]])/2], HIGH);
-		}
-
-		float mi = m;
-		int f;
-		for (int i = 0; i<counter; i++) {	//Delays the minimum then releases solenoid with minimum duration
-			mi = m;
-			for (int ii = 0; ii<counter; ii++) {
-				if (durations[ii] <= mi) {
-					mi = durations[ii];
-					f = ii;
-				}
-			}
-			delay(mi);
-			digitalWrite(solenoid[halfNotes(pos, p[n[f]])/2], LOW);
-			durations[f] = m+1;
-		}
-	}
-
-	return c;
+    //Generates empty array
+    int size = (p[sizeof(p)/sizeof(double)-1] + p[sizeof(p)/sizeof(double)-2])/arrayTime +1;
+    atTime f[size];
+    
+    // Make an array that contains every note (midi) held down at a time
+    
+    // loop through the array-1
+        // get the position, from the time
+        // get the notes held down at that time
+        // generate relative positions
+        // check for errors
+    
+    // turn everything off
+    
 }
