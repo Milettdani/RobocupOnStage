@@ -7,7 +7,7 @@ const double arrayTime = 0.5;
 // Input array = {midi value, start time, hold time}
 double p[36] = {77, 0.00, 0.500, 74, 0.50, 0.500, 69, 1.00, 0.500, 76, 1.50, 0.500, 72, 2.00, 0.500, 69, 2.50, 0.500, 76, 3.00, 0.500, 72, 3.50, 0.500, 69, 4.00, 0.500, 74, 4.50, 0.500, 71, 5.00, 0.500, 67, 5.50, 0.500};
 //movement positions: {time to move at (seconds), midi note to move to}
-double mp[6] = {0.00, 12, 2.5, 16, 5.5, 13};
+double mp[8] = {0.00, 77, 0.5, 74, 1.0, 69, 5.5, 67};
 
 class atTime {
 	public:
@@ -78,30 +78,34 @@ int main()
 		// loop through p
 		for (int i = 1; i<sizeof(p)/sizeof(double); i+=3) {
 			held_down[t][(int)p[i-1]] = t*arrayTime >= p[i] && t*arrayTime < p[i+1] + p[i];
-			if (t*arrayTime >= p[i] && t*arrayTime < p[i+1] + p[i]) cout << t*arrayTime << " - " << p[i-1] << endl;
+			if (t*arrayTime >= p[i] && t*arrayTime < p[i+1] + p[i]) cout << t*arrayTime << " - " << (int)p[i-1] << " - " << held_down[t][(int)p[i-1]] << endl;
 			// Is true if at time t p[i-1] is held down at time t
 		}
 	}
 	// Now we have a list of if a solenoid is down at a given time
 	// loop through held_down; add positions, find solenoid numbers
 	string f = "int p[" + to_string(size) + "][9] = {";
-	int ppos = 0;
+	int ppos = mp[1];
 	string uf;
 	for (int i = 0; i<size; i++) { // Through timestamps
 		uf = "{";
-		for (int j = ppos; j<sizeof(mp)/sizeof(double); j+=2) if (mp[j] == i*arrayTime) {
-			ppos = j;
+		for (int j = 0; j<sizeof(mp)/sizeof(double); j+=2) if (mp[j] == i*arrayTime) {
+			ppos = mp[j+1];
 			break;
 		}
 		string spos = to_string(ppos);
 		uf += spos + ", 0, 0, 0, 0, 0, 0, 0, 0";
-
+        
+        cout << i*arrayTime << " - ";
 		for (int b = 0; b<128; b++) { // Through solenoids
-			if (held_down[i][b]) uf[(halfNotes(ppos, b)/2 + 1)*3 + spos.length()-1] = '1'; // Adds '1' to number of solenoid if it is on
+			if (held_down[i][b]) uf[(halfNotes(ppos, b)/2 + 1)*3 + spos.length()] = '1'; // Adds '1' to number of solenoid if it is on
+			cout << held_down[i][b] << ", ";
+			//if (held_down[i][b]) cout << i*arrayTime << " - " << b << " - " << (halfNotes(ppos, b)/2 + 1)*3 + spos.length()-1 << " - " << uf << endl;
 		}
+		cout << endl;
 
 		uf += '}';
-		if (i != 127) uf += ", ";
+		if (i < size-1) uf += ", ";
 		f += uf;
 	}
 	f += "};";
