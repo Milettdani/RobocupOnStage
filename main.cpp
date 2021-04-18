@@ -47,7 +47,7 @@ int main()
 	//Generate empty array
 	int size = (p[sizeof(p)/sizeof(double)-1] + p[sizeof(p)/sizeof(double)-2])/arrayTime; //length of final array: length of track / arrayTime
     
-    string f = "\nconst int p[" + to_string(size) + "][2] = {";
+    string f = "\nconst long p[" + to_string(size) + "][2] = {";
 	int ppos = mp[1];
 	int pppos = mp[1];
 	string uf;
