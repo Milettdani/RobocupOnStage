@@ -5,11 +5,11 @@
 using namespace std;
 
 // Time between elements of final array (in seconds)
-const double arrayTime = 0.5;
+const double arrayTime = 0.05;
 // Input array = {midi value, start time, hold time}
-double p[39] = {77, 0.00, 0.500, 79, 0.00, 0.600, 74, 0.50, 0.500, 69, 1.00, 0.500, 76, 1.50, 0.500, 72, 2.00, 0.500, 69, 2.50, 0.500, 76, 3.00, 0.500, 72, 3.50, 0.500, 69, 4.00, 0.500, 74, 4.50, 0.500, 71, 5.00, 0.500, 67, 5.50, 0.500};
+double p[72] = {48, 0.00, 0.250, 52, 0.50, 0.250, 48, 1.0, 1, 52, 1.50, 0.250, 55, 2, 0.50, 55, 4.00, 0.50, 48, 5, 0.250, 52, 5.50, 0.250, 48, 6, 0.250, 52, 6.50, 0.250, 55, 7, 0.50, 55, 8, 0.250, 60, 9, 0.250, 59, 9.50, 0.250, 57, 10.0, 0.250, 55, 10.50, 0.250, 53, 11, 0.250, 57, 12.00, 0.5, 55, 13.00, 0.250, 53, 13.50, 0.250, 52, 14, 0.250, 50, 14.50, 0.250, 48, 15, 0.50, 48, 16.00, 0.50};
 //movement positions: {time to move at (seconds), midi note to move to}
-double mp[8] = {0.00, 77, 0.5, 74, 1.0, 69, 5.5, 67};
+float mp[6] = {0.00, 48, 0.5, 52, 1.0, 48};
 
 class atTime {
 	public:
@@ -28,7 +28,7 @@ int halfNotes(int a, int b) //Calculates distance between two notes in "half-not
 	if (om > c1) m += ceil((float)om/(14+c1));
 	if (om > c2) m += ceil((float)om/(14+c2));
 	
-	if (b<a) m = -m;
+	if (b<a) m = -m + 1;
 	return m;
 }
 
@@ -45,7 +45,7 @@ void editFile(string str_replace)
 	in_file.close();
 
 	ofstream out_file("v2.ino");
-	out_file << str;   
+	out_file << str;
 }
 
 int main()
@@ -54,14 +54,14 @@ int main()
 	int size = (p[sizeof(p)/sizeof(double)-1] + p[sizeof(p)/sizeof(double)-2])/arrayTime; //length of final array: length of track / arrayTime
 	atTime g[size];
     
-    string f = "\nint p[" + to_string(size) + "][9] = {";
+    string f = "\nconst int p[" + to_string(size) + "][9] = {";
 	int ppos = mp[1];
 	int pppos = mp[1];
 	string uf;
 	for (int t=0;t<size;t++) { // t+1th atTime in g
 		uf = "{";
 		pppos = ppos;
-		for (int j = 0; j<sizeof(mp)/sizeof(double); j+=2) if (mp[j] == t*arrayTime) {
+		for (int j = 0; j<sizeof(mp)/sizeof(float); j+=2) if (abs(mp[j] - t*arrayTime) < 0.005) {
 			ppos = mp[j+1];
 			break;
 		}
@@ -77,8 +77,9 @@ int main()
 		if (t < size-1) uf += ", ";
 		f += uf;
 	}
-	f += "};\nint size = " + to_string(size) + ";\nconst double arrayTime = " + to_string(arrayTime) + ";\n\n";
+	f += "};\nconst int size = " + to_string(size) + ";\nconst double arrayTime = " + to_string(arrayTime) + ";\n\n";
 	editFile(f);
+	//cout << f;
 }
                                                                                                                                               
 /*
