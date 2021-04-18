@@ -63,65 +63,9 @@ input.addEventListener('change', function (e) {
 				} else {
 					if (p == true) {
 						t[i] = "double p" + "[" + Object.size(parsedMusic.tracks[i].notes) * 3 + "] = {"
-						//console.log("int t" + i + "[" + Object.size(parsedMusic.tracks[i].notes) + "] = ")
-						//Creat elements
-						var toNext = 0
-
 						for (var j = 0; j < Object.size(parsedMusic.tracks[i].notes); j++) {
-							if (j > 0) {
-								toNext = parsedMusic.tracks[i].notes[j].time - parsedMusic.tracks[i].notes[j-1].time
-							} else {
-								toNext = parsedMusic.tracks[i].notes[j].time
-							}
-
-							if (j > 0) {
-								t[i] += ", "
-							}
-							var nName = parsedMusic.tracks[i].notes[j].name
-							//console.log(nName)
-							var o = 0
-							switch (nName[0]) {
-								case 'C':
-									o = 0 + nName[nName.length - 1] * 7 // Note value + octave * 7
-									break
-								case 'D':
-									o = 1 + nName[nName.length - 1] * 7
-									break
-								case 'E':
-									o = 2 + nName[nName.length - 1] * 7
-									break
-								case 'F':
-									o = 3 + nName[nName.length - 1] * 7
-									break
-								case 'G':
-									o = 4 + nName[nName.length - 1] * 7
-									break
-								case 'A':
-									o = 5 + nName[nName.length - 1] * 7
-									break
-								case 'H':
-									o = 6 + nName[nName.length - 1] * 7
-									break
-								}
-								//console.log(n[0])
-							if (nName.length == 3) {
-								o = o * 201
-							}
-
-							var n = o
-							if (o > 200) {
-								n /= 201
-							}
-							//console.log(n[0])
-
-							//n += nName[nName.length - 1] * 14
-
-							//console.log(nName, nName[nName.length - 1], nName[nName.length - 1] * 14, n, n - nName[nName.length - 1] * 14)
-							//n[1] = nName[nName.length - 1]
-							//console.log(estr)
-
-							t[i] += parsedMusic.tracks[i].notes[j].midi + ", " + parsedMusic.tracks[i].notes[j].time.toFixed(2) + ", " + parsedMusic.tracks[i].notes[j].duration.toFixed(2);	// [midi number of note], [time to next note in s], [duration of note in s]
-							//console.log(t[i])
+							if (j > 0) t[i] += ", "
+							t[i] += parsedMusic.tracks[i].notes[j].midi + ", " + parsedMusic.tracks[i].notes[j].time.toFixed(2) + ", " + parsedMusic.tracks[i].notes[j].duration.toFixed(2);
 						}
 						p = false
 					}
