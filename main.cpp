@@ -11,12 +11,6 @@ double p[72] = {48, 0.00, 0.250, 52, 0.50, 0.250, 48, 1.0, 1, 52, 1.50, 0.250, 5
 //movement positions: {time to move at (seconds), midi note to move to}
 float mp[6] = {0.00, 48, 0.5, 52, 1.0, 48};
 
-class atTime {
-	public:
-		int pos; // Position of the first solenoid at the time (in midi)
-		int states[8]; // Solenoid state: on/off state of solenoids at the time
-};
-
 int halfNotes(int a, int b) //Calculates distance between two notes in "half-notes".    //ARGS: a = first note; b = second note
 {
 	int m = abs(b-a);
@@ -52,9 +46,8 @@ int main()
 {
 	//Generate empty array
 	int size = (p[sizeof(p)/sizeof(double)-1] + p[sizeof(p)/sizeof(double)-2])/arrayTime; //length of final array: length of track / arrayTime
-	atTime g[size];
     
-    string f = "\nconst int p[" + to_string(size) + "][9] = {";
+    string f = "\nconst int p[" + to_string(size) + "][2] = {";
 	int ppos = mp[1];
 	int pppos = mp[1];
 	string uf;
@@ -67,10 +60,10 @@ int main()
 		}
 		string spos = to_string(halfNotes(pppos, ppos));
 		if (t == 0) spos = to_string(ppos);
-		uf += spos + ", 0, 0, 0, 0, 0, 0, 0, 0";
+		uf += spos + ", 00000000";
 		// loop through p
 		for (int i = 1; i<sizeof(p)/sizeof(double); i+=3) {
-			if (t*arrayTime >= p[i] && t*arrayTime < p[i+1] + p[i]) uf[(halfNotes(ppos, p[i-1])/2 + 1)*3 + spos.length()] = '1';
+			if (t*arrayTime >= p[i] && t*arrayTime < p[i+1] + p[i]) uf[(halfNotes(ppos, p[i-1])/2)+3 + spos.length()] = '1';
 			// Is true if at time t p[i-1] is held down at time t
 		}
 		uf += '}';
