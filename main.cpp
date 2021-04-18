@@ -59,7 +59,7 @@ int main()
 			break;
 		}
 		string spos = to_string(halfNotes(pppos, ppos));
-		if (t == 0) spos = to_string(ppos);
+		if (t == 0) spos = to_string(halfNotes(12, ppos));
 		uf += spos + ", 00000000";
 		// loop through p
 		for (int i = 1; i<sizeof(p)/sizeof(double); i+=3) {
