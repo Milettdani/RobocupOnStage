@@ -5,7 +5,7 @@ using namespace std;
 // Time between elements of final array (in seconds)
 const double arrayTime = 0.5;
 // Input array = {midi value, start time, hold time}
-double p[36] = {77, 0.00, 0.500, 74, 0.50, 0.500, 69, 1.00, 0.500, 76, 1.50, 0.500, 72, 2.00, 0.500, 69, 2.50, 0.500, 76, 3.00, 0.500, 72, 3.50, 0.500, 69, 4.00, 0.500, 74, 4.50, 0.500, 71, 5.00, 0.500, 67, 5.50, 0.500};
+double p[39] = {77, 0.00, 0.500, 79, 0.00, 0.600, 74, 0.50, 0.500, 69, 1.00, 0.500, 76, 1.50, 0.500, 72, 2.00, 0.500, 69, 2.50, 0.500, 76, 3.00, 0.500, 72, 3.50, 0.500, 69, 4.00, 0.500, 74, 4.50, 0.500, 71, 5.00, 0.500, 67, 5.50, 0.500};
 //movement positions: {time to move at (seconds), midi note to move to}
 double mp[8] = {0.00, 77, 0.5, 74, 1.0, 69, 5.5, 67};
 
@@ -62,57 +62,36 @@ int main()
 	int size = (p[sizeof(p)/sizeof(double)-1] + p[sizeof(p)/sizeof(double)-2])/arrayTime; //length of final array: length of track / arrayTime
 	atTime g[size];
     
-	// Make an array that contains every note (midi) held down at a time
-	// for loops through every time stamp
-		// for loop that loops every note ever played
-		// check if that note is held down at time stamp
-		// add to the list of notes at that time
-
-	// t is the variable of time
-	bool held_down[size][128];
-	for (int i = 0; i<size; i++) {
-		for (int j = 0; j<128; j++) held_down[i][j] = false;
-	}
-    
-	for (int t=0;t<size;t+=1) { // t+1th atTime in g
+    string f = "int p[" + to_string(size) + "][9] = {";
+	int ppos = mp[1];
+	int pppos = mp[1];
+	string uf;
+	bool sposNull = false;
+	for (int t=0;t<size;t++) { // t+1th atTime in g
+		uf = "{";
+		for (int j = 0; j<sizeof(mp)/sizeof(double); j+=2) if (mp[j] == t*arrayTime) {
+			pppos = ppos;
+			ppos = mp[j+1];
+			sposNull = false;
+			break;
+		} else sposNull = true;
+		string spos = to_string(halfNotes(pppos, ppos));
+		if (sposNull) spos = "0";
+		if (t == 0) spos = to_string(ppos);
+		uf += spos + ", 0, 0, 0, 0, 0, 0, 0, 0";
 		// loop through p
 		for (int i = 1; i<sizeof(p)/sizeof(double); i+=3) {
-			held_down[t][(int)p[i-1]] = t*arrayTime >= p[i] && t*arrayTime < p[i+1] + p[i];
-			if (t*arrayTime >= p[i] && t*arrayTime < p[i+1] + p[i]) cout << t*arrayTime << " - " << (int)p[i-1] << " - " << held_down[t][(int)p[i-1]] << endl;
+			if (t*arrayTime >= p[i] && t*arrayTime < p[i+1] + p[i]) uf[(halfNotes(ppos, p[i-1])/2 + 1)*3 + spos.length()] = '1';
 			// Is true if at time t p[i-1] is held down at time t
 		}
-	}
-	// Now we have a list of if a solenoid is down at a given time
-	// loop through held_down; add positions, find solenoid numbers
-	string f = "int p[" + to_string(size) + "][9] = {";
-	int ppos = mp[1];
-	string uf;
-	for (int i = 0; i<size; i++) { // Through timestamps
-		uf = "{";
-		for (int j = 0; j<sizeof(mp)/sizeof(double); j+=2) if (mp[j] == i*arrayTime) {
-			ppos = mp[j+1];
-			break;
-		}
-		string spos = to_string(ppos);
-		uf += spos + ", 0, 0, 0, 0, 0, 0, 0, 0";
-        
-        cout << i*arrayTime << " - ";
-		for (int b = 0; b<128; b++) { // Through solenoids
-			if (held_down[i][b]) uf[(halfNotes(ppos, b)/2 + 1)*3 + spos.length()] = '1'; // Adds '1' to number of solenoid if it is on
-			cout << held_down[i][b] << ", ";
-			//if (held_down[i][b]) cout << i*arrayTime << " - " << b << " - " << (halfNotes(ppos, b)/2 + 1)*3 + spos.length()-1 << " - " << uf << endl;
-		}
-		cout << endl;
-
 		uf += '}';
-		if (i < size-1) uf += ", ";
+		if (t < size-1) uf += ", ";
 		f += uf;
 	}
 	f += "};";
 
 	cout << f;
 }
-
                                                                                                                                               
 /*
                                     ___                                                ____                      ____                         ___     
@@ -172,7 +151,23 @@ ________________________________________________________________________________
      _\/\\\\\\\\\\_\/\\\___\/\\\_\//\\\/\\\\\/\\\___/\\\__________/\\\__\//\\\_\/\\\__\//\\\____________/\\\////\\\___/\\\\\\\\\\\___/\\\\\\\\\\\_______/\\\/____\/\\\__\//\\\_\/\\\___\/\\\____\/\\\______\/\\\\\\\\\\_   
       _\////////\\\_\/\\\___\/\\\__\//\\\\\/\\\\\___\//\\\________\//\\\__/\\\__\/\\\___\/\\\___________\/\\\__\/\\\__\//\\///////___\//\\///////______/\\\/______\/\\\___\/\\\_\/\\\___\/\\\____\/\\\_/\\__\////////\\\_  
        __/\\\\\\\\\\_\//\\\\\\\\\____\//\\\\//\\\_____\///\\\\\\\\__\///\\\\\/___\/\\\___\/\\\___________\//\\\\\\\/\\__\//\\\\\\\\\\__\//\\\\\\\\\\__/\\\\\\\\\\\_\/\\\___\/\\\_\//\\\\\\\\\_____\//\\\\\____/\\\\\\\\\\_ 
-        _\//////////___\/////////______\///__\///________\////////_____\/////_____\///____\///_____________\///////\//____\//////////____\//////////__\///////////__\///____\///___\/////////_______\/////____\//////////__                                                 
+        _\//////////___\/////////______\///__\///________\////////_____\/////_____\///____\///_____________\///////\//____\//////////____\//////////__\///////////__\///____\///___\/////////_______\/////____\//////////__
+
+
+           ,.         ,·´'; '        ,.-·.            .,                       .,                         ,.  '                      _,.,  °                 ,. -,    
+      ;'´*´ ,'\       ,'  ';'\°      /    ;'\'      ,·´    '` ·.'             ,·´    '` ·.'                 /   ';\               ,.·'´  ,. ,  `;\ '         ,.·'´,    ,'\   
+      ;    ';::\      ;  ;::'\     ;    ;:::\      \`; `·;·.   `·,          \`; `·;·.   `·,           ,'   ,'::'\            .´   ;´:::::\`'´ \'\     ,·'´ .·´'´-·'´::::\' 
+     ;      '\;'      ;  ;:::;    ';    ;::::;'      ;   ,'\::`·,   \'         ;   ,'\::`·,   \'        ,'    ;:::';'          /   ,'::\::::::\:::\:'   ;    ';:::\::\::;:'  
+    ,'  ,'`\   \      ;  ;:::;     ;   ;::::;      ;   ,'::'\:::';   ';       ;   ,'::'\:::';   ';       ';   ,':::;'          ;   ;:;:-·'~^ª*';\'´     \·.    `·;:'-·'´     
+    ;  ;::;'\  '\    ;  ;:::;     ';  ;'::::;       ;   ;:::;'·:.'  ,·'\'      ;   ;:::;'·:.'  ,·'\'      ;  ,':::;' '          ;  ,.-·:*'´¨'`*´\::\ '     \:`·.   '`·,  '     
+   ;  ;:::;  '\  '\ ,'  ;:::;'     ;  ';:::';       ';  ';: -· '´. ·'´:::'\'    ';  ';: -· '´. ·'´:::'\'    ,'  ,'::;'            ;   ;\::::::::::::'\;'        `·:'`·,   \'      
+  ,' ,'::;'     '\   ¨ ,'\::;'      ';  ;::::;'      ;  ,-·:'´:\:::::::;·'     ;  ,-·:'´:\:::::::;·'     ;  ';_:,.-·´';\     ;  ;'_\_:;:: -·^*';\         ,.'-:;'  ,·\     
+  ;.'\::;        \`*´\::\; °      \*´\:::;     ,'  ';::::::'\;:·'´        ,'  ';::::::'\;:·'´         ',   _,.-·'´:\:\    ';    ,  ,. -·:*'´:\:'\°  ,·'´     ,.·´:::'\    
+  \:::\'          '\:::\:' '         '\::\:;'      \·.,·\;-· '´  '           \·.,·\;-· '´  '             \¨:::::::::::\';     \`*´ ¯\:::::::::::\;' '  \`*'´\::::::::;·'   
+    \:'             `*´'             `*´        \::\:\                   \::\:\                     '\;::_;:-·'´         \:::::\;::-·^*'´        \::::\:;:·´        
+                                                  `'·;·'                    `'·;·'                       '¨                    `*´¯                   '`*'´            
+                                                  
+                                                  
 
 
 */    
