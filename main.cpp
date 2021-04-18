@@ -70,7 +70,7 @@ int main()
 		if (t < size-1) uf += ", ";
 		f += uf;
 	}
-	f += "};\nconst int size = " + to_string(size) + ";\nconst double arrayTime = " + to_string(arrayTime) + ";\n\n";
+	f += "};\nconst int arrSize = " + to_string(size) + ";\nconst double arrayTime = " + to_string(arrayTime) + ";\n\n";
 	editFile(f);
 	//cout << f;
 }
