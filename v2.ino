@@ -10,8 +10,8 @@ const int startmove = 28;
 int mmove(int value)
 {
   Serial.println("IN MOVING");
-	int startTime = millis();
-	if (value == 0) return 0;
+  int startTime = millis();
+  if (value == 0) return 0;
   else if (value < 0) digitalWrite(dirPin, HIGH);                                                                               // Change MoveDir
   else if (value > 0) digitalWrite(dirPin, LOW);
   for (int i = 0; i<8; i++) {
@@ -24,7 +24,7 @@ int mmove(int value)
     digitalWrite(stepPin, LOW);
     delayMicroseconds(80);
   }
-	return millis() - startTime;
+  return millis() - startTime;
 }
 
 int dig(long val, int n)
@@ -67,28 +67,14 @@ long toDec(int dec)
 
 void play()
 {
-  mmove(p[0][0]);
+  //move to starting pos then wait
+  mmove(startmove);
   delay(5000);
-  long dec = toDec(p[0][1]);
-  for (int i=0; i<8; i++) {
-    //Serial.println("dec:");
-    //Serial.println(dec);
-    //Serial.println(i);
-    digitalWrite(solenoid[i], dig(dec, i));
-    Serial.println(dig(dec, i));
-    //Serial.println("\n");
-  }
-  delay(arrayTime*1000);
+
   int wt;
-  Serial.println("\n\n");
-  for (int t=1; t<arrSize; t++) {
-    wt = mmove(p[t][0]); //wasted time while moving in ms
-    Serial.println("Moving...");
-    Serial.println(p[t][0]);
+  long dec;
+  for (int t=0; t<arrSize; t++) {
     Serial.println(t);
-    Serial.println("\n");
-    Serial.println(wt);
-    Serial.println(round(((float)wt/1000)/arrayTime));
     Serial.println("\n");
     dec = toDec(p[t][1]);
     for (int b=0; b<8; b++) {
@@ -99,6 +85,10 @@ void play()
       //Serial.println(dig(dec, b));
       //Serial.println("\n");
     }
+    Serial.println("\n");
+    Serial.println("Moving...");
+    Serial.println(p[t][0]);
+    wt = mmove(p[t][0]); //wasted time while moving in ms
     if (round(((float)wt/1000)/arrayTime) > 0) t += round(((float)wt/1000)/arrayTime) -1;
     delay(arrayTime*1000);
     //Serial.println("\n");
@@ -107,18 +97,18 @@ void play()
 
 void setup()
 {
-	Serial.begin(9600);
+  Serial.begin(9600);
   Serial.println("Starting\n");
 
-	for (int i = 0; i < 8; i++) {pinMode(solenoid[i], OUTPUT); digitalWrite(solenoid[i], LOW);}
-	pinMode(stepPin, OUTPUT);
-	pinMode(dirPin, OUTPUT);
-	pinMode(enPin, OUTPUT);
-	digitalWrite(enPin, LOW);	
+  for (int i = 0; i < 8; i++) {pinMode(solenoid[i], OUTPUT); digitalWrite(solenoid[i], LOW);}
+  pinMode(stepPin, OUTPUT);
+  pinMode(dirPin, OUTPUT);
+  pinMode(enPin, OUTPUT);
+  digitalWrite(enPin, LOW); 
 
-	play();
-	delay(5000);
-	digitalWrite(enPin, HIGH);
+  play();
+  delay(5000);
+  digitalWrite(enPin, HIGH);
 }
 
 void loop() {
