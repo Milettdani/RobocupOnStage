@@ -2,9 +2,10 @@
 const int solenoid[8] = { A0, A1, A2, A3, A4, A5, 11, 12 };
 const int dirPin = 6, stepPin = 7, enPin = 5;
 
-const long p[67][2] = {{28, 384}, {0, 256}, {4, 384}, {0, 256}, {-4, 384}, {0, 384}, {0, 416}, {0, 384}, {0, 264}, {0, 264}, {0, 256}, {0, 256}, {0, 256}, {0, 256}, {0, 256}, {0, 256}, {0, 264}, {0, 264}, {0, 256}, {0, 256}, {0, 384}, {0, 256}, {0, 288}, {0, 256}, {0, 384}, {0, 256}, {0, 288}, {0, 256}, {0, 264}, {0, 264}, {0, 256}, {0, 256}, {0, 264}, {0, 256}, {0, 256}, {0, 256}, {0, 258}, {0, 256}, {0, 258}, {0, 256}, {0, 260}, {0, 256}, {0, 264}, {0, 256}, {0, 272}, {0, 256}, {0, 256}, {0, 256}, {0, 260}, {0, 260}, {0, 256}, {0, 256}, {0, 264}, {0, 256}, {0, 272}, {0, 256}, {0, 288}, {0, 256}, {0, 320}, {0, 256}, {0, 384}, {0, 384}, {0, 256}, {0, 256}, {0, 384}, {0, 384}, {0, 256}};
+const long p[67][2] = {{4, 384}, {0, 256}, {-4, 384}, {0, 256}, {0, 384}, {0, 384}, {0, 416}, {0, 384}, {0, 264}, {0, 264}, {0, 256}, {0, 256}, {0, 256}, {0, 256}, {0, 256}, {0, 256}, {0, 264}, {0, 264}, {0, 256}, {0, 256}, {0, 384}, {0, 256}, {0, 288}, {0, 256}, {0, 384}, {0, 256}, {0, 288}, {0, 256}, {0, 264}, {0, 264}, {0, 256}, {0, 256}, {0, 264}, {0, 256}, {0, 256}, {0, 256}, {0, 258}, {0, 256}, {0, 258}, {0, 256}, {0, 260}, {0, 256}, {0, 264}, {0, 256}, {0, 272}, {0, 256}, {0, 256}, {0, 256}, {0, 260}, {0, 260}, {0, 256}, {0, 256}, {0, 264}, {0, 256}, {0, 272}, {0, 256}, {0, 288}, {0, 256}, {0, 320}, {0, 256}, {0, 384}, {0, 384}, {0, 256}, {0, 256}, {0, 384}, {0, 384}, {0, 256}};
 const int arrSize = 67;
 const double arrayTime = 0.250000;
+const int startmove = 28;
 
 int mmove(int value)
 {
@@ -12,7 +13,11 @@ int mmove(int value)
 	int startTime = millis();
 	if (value == 0) return 0;
   else if (value < 0) digitalWrite(dirPin, HIGH);                                                                               // Change MoveDir
-  else if (value > 0) digitalWrite(dirPin, LOW);                                                                                // Change MoveDir
+  else if (value > 0) digitalWrite(dirPin, LOW);
+  for (int i = 0; i<8; i++) {
+    digitalWrite(solenoid[i], LOW);
+  }
+  // Change MoveDir
   for (int i = 0; i < 588 * abs(value); i++) {                                                                                  // Move
     digitalWrite(stepPin, HIGH);
     delayMicroseconds(80);
@@ -80,17 +85,21 @@ void play()
     wt = mmove(p[t][0]); //wasted time while moving in ms
     Serial.println("Moving...");
     Serial.println(p[t][0]);
+    Serial.println(t);
     Serial.println("\n");
-    //Serial.println(round(((float)wt/1000)/arrayTime*1000));
-    //t += round(((float)wt/1000)/arrayTime);
+    Serial.println(wt);
+    Serial.println(round(((float)wt/1000)/arrayTime));
+    Serial.println("\n");
     dec = toDec(p[t][1]);
     for (int b=0; b<8; b++) {
       //Serial.println(dec);
       //Serial.println(b);
       digitalWrite(solenoid[b], dig(dec, b));
+      Serial.println(dig(dec, b));
       //Serial.println(dig(dec, b));
       //Serial.println("\n");
     }
+    if (round(((float)wt/1000)/arrayTime) > 0) t += round(((float)wt/1000)/arrayTime) -1;
     delay(arrayTime*1000);
     //Serial.println("\n");
   }
