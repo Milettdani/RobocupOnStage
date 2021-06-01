@@ -40,7 +40,11 @@ input.addEventListener('change', function (e) {
 				if (JSON.stringify(parsedMusic.tracks[i]).includes('isPercussion') && parsedMusic.tracks[i].isPercussion) {
 					if (d == true) {
 						t[i] = "double d" + "[" + Object.size(parsedMusic.tracks[i].notes) * 2 + "] = {"
-						//console.log("int t" + i + "[" + Object.size(parsedMusic.tracks[i].notes) + "] = ")
+						for (var j = 0; j < Object.size(parsedMusic.tracks[i].notes); j++) {
+							if (j > 0) t[i] += ", "
+							t[i] += parsedMusic.tracks[i].notes[j].midi + ", " + parsedMusic.tracks[i].notes[j].time.toFixed(2);
+						}
+						/*console.log("int t" + i + "[" + Object.size(parsedMusic.tracks[i].notes) + "] = ")
 						//Creat elements
 						var toNext = 0
 
@@ -57,7 +61,7 @@ input.addEventListener('change', function (e) {
 							}
 							t[i] += parsedMusic.tracks[i].notes[j].midi + ", " + toNext.toFixed(2);
 							//console.log(parsedMusic.tracks[i].notes[j].midi + ", " + parsedMusic.tracks[i].notes[j].time + ", " + parsedMusic.tracks[i].notes[j].duration)
-						}
+						}*/
 						d = false
 					}
 				} else {
