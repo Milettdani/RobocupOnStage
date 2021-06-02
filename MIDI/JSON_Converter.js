@@ -39,7 +39,7 @@ input.addEventListener('change', function (e) {
 			if (Object.size(parsedMusic.tracks[i].notes) > 0) {
 				if (JSON.stringify(parsedMusic.tracks[i]).includes('isPercussion') && parsedMusic.tracks[i].isPercussion) {
 					if (d == true) {
-						t[i] = "double d" + "[" + Object.size(parsedMusic.tracks[i].notes) * 2 + "] = {"
+						t[i] = "const double d" + "[" + Object.size(parsedMusic.tracks[i].notes) * 2 + "] = {"
 						for (var j = 0; j < Object.size(parsedMusic.tracks[i].notes); j++) {
 							if (j > 0) t[i] += ", "
 							t[i] += parsedMusic.tracks[i].notes[j].midi + ", " + parsedMusic.tracks[i].notes[j].time.toFixed(2);
@@ -66,7 +66,7 @@ input.addEventListener('change', function (e) {
 					}
 				} else {
 					if (p == true) {
-						t[i] = "double p" + "[" + Object.size(parsedMusic.tracks[i].notes) * 3 + "] = {"
+						t[i] = "const double p" + "[" + Object.size(parsedMusic.tracks[i].notes) * 3 + "] = {"
 						for (var j = 0; j < Object.size(parsedMusic.tracks[i].notes); j++) {
 							if (j > 0) t[i] += ", "
 							t[i] += parsedMusic.tracks[i].notes[j].midi + ", " + parsedMusic.tracks[i].notes[j].time.toFixed(2) + ", " + parsedMusic.tracks[i].notes[j].duration.toFixed(2);
