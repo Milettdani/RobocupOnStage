@@ -5,60 +5,15 @@
 using namespace std;
 
 // Time between elements of final array (in seconds)
-const double arrayTime = 0.25;
-// Input array = {midi value, start time, hold time}
-double p[72] = {48, 0.00, 0.250, 52, 0.50, 0.250, 48, 1.0, 1, 52, 1.50, 0.250, 55, 2, 0.50, 55, 4.00, 0.50, 48, 5, 0.250, 52, 5.50, 0.250, 48, 6, 0.250, 52, 6.50, 0.250, 55, 7, 0.50, 55, 8, 0.250, 60, 9, 0.250, 59, 9.50, 0.250, 57, 10.0, 0.250, 55, 10.50, 0.250, 53, 11, 0.250, 57, 12.00, 0.5, 55, 13.00, 0.250, 53, 13.50, 0.250, 52, 14, 0.250, 50, 14.50, 0.250, 48, 15, 0.50, 48, 16.00, 0.50};
-//movement positions: {time to move at (seconds), midi note to move to}
-float mp[6] = {0.00, 48, 0.5, 52, 1.0, 48};
+const double arrayTime = 0.5;
+// Input array = {midi value, start time}
+const double d[20] = {36, 0.00, 36, 1.00, 38, 2.00, 36, 3.00, 36, 4.00, 36, 5.00, 36, 5.50, 38, 6.00, 36, 6.00, 36, 7.00};
 
-class atTime {
-	public:
-		int pos; // Position of the first solenoid at the time (in midi)
-		int states[8]; // Solenoid state: on/off state of solenoids at the time
-};
+const int midi_length = 7;
+const int midi[midi_length] = {38, 50, 51, 36, 42, 52, 53};
+//snare, tom1, tom2, tom3, hh, ride, crash
 
-bool isBlack(int N) //Checks if given note is black
-{
-	int n = N%12;
-	if (n == 1 || n == 3 || n == 6 || n == 8 || n == 10) return true;
-	else return false;
-}
-
-int halfNotes(int a, int b) //Calculates distance between two notes in "half-notes".    //ARGS: a = first note; b = second note
-{
-	int m = abs(b-a);
-	int c1 = 4 - a%12;
-	if (c1 < 0) c1 = 12 + c1;
-	int c2 = 12 - a%12;
-	
-	int om = m;
-	if (om > c1) m += ceil((float)om/(14+c1));
-	if (om > c2) m += ceil((float)om/(14+c2));
-	
-	if (b<a) m = -m + 1;
-	return m;
-}
-
-int toMidi(int m, int h)	//Finds midi-value of note that is [h] half notes away from midi note [m]
-{
-	int cc1 = 4;
-	int cc2 = 12;
-	if (h<0) {cc1 = 0; cc2 = 8;}
-	int c1 = cc1 - m%12;
-	if (c1<0) c1 = 12 + c1;
-	int c2 = cc2 - m%12;
-	if (c2<0) c2 = 12 + c2;
-	
-	int hh = abs(h);
-	int oh = hh;
-	if (oh>c1) hh -= ceil((float)oh/(14+c1));
-	if (oh>c2) hh -= ceil((float)oh/(14+c2));
-	
-	if (h<0) hh = -hh;
-	return m + hh;
-}
-
-void editFile(string str_replace)
+void editFile(string str_replace)		//NEEDS EDITING
 {
 	ostringstream text;
 	ifstream in_file("v2.ino");
@@ -77,35 +32,30 @@ void editFile(string str_replace)
 int main()
 {
 	//Generate empty array
-	int size = (p[sizeof(p)/sizeof(double)-1] + p[sizeof(p)/sizeof(double)-2])/arrayTime; //length of final array: length of track / arrayTime
-	atTime g[size];
+	int size = (d[sizeof(d)/sizeof(double)-1])/arrayTime; //length of final array: length of track / arrayTime
     
-    string f = "\nconst int p[" + to_string(size+1) + "][2] = {";
-	int ppos = mp[1];
-	int pppos = mp[1];
+    string f = "\nconst int d[" + to_string(size+1) + "] = {";
 	string uf;
 	for (int t=0;t<size;t++) { // t+1th atTime in g
-		uf = "{";
-		pppos = ppos;
-		for (int j = 0; j<sizeof(mp)/sizeof(float); j+=2) if (abs(mp[j] - t*arrayTime) < 0.005) {
-			ppos = mp[j+1];
-			break;
-		}
-		string spos = to_string(halfNotes(pppos, ppos));
-		if (t == 0) spos = to_string(halfNotes(12, ppos));
-		uf += spos + ", ";
-		string uff = "100000000";
-		// loop through p
-		for (int i = 1; i<sizeof(p)/sizeof(double); i+=3) {
-			if (t*arrayTime >= p[i] && t*arrayTime < p[i+1] + p[i]) uff[(halfNotes(ppos, p[i-1])/2)+1] = '1';
+		uf = "10000000";
+		// loop through d
+		for (int i = 1; i<sizeof(d)/sizeof(double); i+=2) {
+			if (t*arrayTime == d[i]) {
+				for (int j = 0; j<midi_length; j++) {
+					if (midi[j] == d[i-1]) {
+						uf[j+1] = '1';
+						break;
+					}
+				}
+			}
 			// Is true if at time t p[i-1] is held down at time t
 		}
-		uf += to_string(stoi(uff, 0, 2)) + "}, ";
+		uf = to_string(stoi(uf, 0, 2)) + ", ";
 		f += uf;
 	}
-	f += "{0, 256}};\nconst int arrSize = " + to_string(size+1) + ";\nconst double arrayTime = " + to_string(arrayTime) + ";\n\n";
-	editFile(f);
-	//cout << f;
+	f += "128};\nconst int arrSize = " + to_string(size+1) + ";\nconst double arrayTime = " + to_string(arrayTime) + ";\n\n";
+	//editFile(f);
+	cout << f;
 }
                                                                                                                                               
 /*
