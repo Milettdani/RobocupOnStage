@@ -61,7 +61,7 @@ int toMidi(int m, int h)	//Finds midi-value of note that is [h] half notes away 
 void editFile(string str_replace)
 {
 	ostringstream text;
-	ifstream in_file("v2.ino");
+	ifstream in_file("v2/v2.ino");
 
 	text << in_file.rdbuf();
 	string str = text.str();
@@ -70,7 +70,7 @@ void editFile(string str_replace)
 	str.replace(pos+4, pos2 - (pos+4), str_replace);
 	in_file.close();
 
-	ofstream out_file("v2.ino");
+	ofstream out_file("v2/v2.ino");
 	out_file << str;
 }
 
