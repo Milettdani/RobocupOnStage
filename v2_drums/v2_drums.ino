@@ -1,3 +1,4 @@
+bool sb = false;
 const int solenoid[7] = {A0, A1, A2, A3, A4, A5, 11};
 
 const int d[15] = {136, 128, 136, 128, 192, 128, 136, 128, 136, 128, 136, 136, 200, 128, 128};
@@ -51,6 +52,11 @@ void play()
 void setup()
 {
   Serial.begin(9600);
+
+  pinMode(2, INPUT);
+  attachInterrupt(digitalPinToInterrupt(2), start, RISING);
+  
+  while (!sb) {}
   Serial.println("Starting\n");
 
   for (int i = 0; i < 8; i++) {pinMode(solenoid[i], OUTPUT); digitalWrite(solenoid[i], LOW);}
@@ -60,4 +66,9 @@ void setup()
 }
 
 void loop() {
+}
+
+void start()
+{
+  sb = true;
 }

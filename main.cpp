@@ -7,9 +7,10 @@ using namespace std;
 // Time between elements of final array (in seconds)
 const double arrayTime = 0.25;
 // Input array = {midi value, start time, hold time}
-double p[72] = {48, 0.00, 0.250, 52, 0.50, 0.250, 48, 1.0, 1, 52, 1.50, 0.250, 55, 2, 0.50, 55, 4.00, 0.50, 48, 5, 0.250, 52, 5.50, 0.250, 48, 6, 0.250, 52, 6.50, 0.250, 55, 7, 0.50, 55, 8, 0.250, 60, 9, 0.250, 59, 9.50, 0.250, 57, 10.0, 0.250, 55, 10.50, 0.250, 53, 11, 0.250, 57, 12.00, 0.5, 55, 13.00, 0.250, 53, 13.50, 0.250, 52, 14, 0.250, 50, 14.50, 0.250, 48, 15, 0.50, 48, 16.00, 0.50};
-//movement positions: {time to move at (seconds), midi note to move to}
-float mp[6] = {0.00, 48, 0.5, 52, 1.0, 48};
+const double p[72] = {48, 0.00, 0.250, 52, 0.50, 0.250, 48, 1.0, 1, 52, 1.50, 0.250, 55, 2, 0.50, 55, 4.00, 0.50, 48, 5, 0.250, 52, 5.50, 0.250, 48, 6, 0.250, 52, 6.50, 0.250, 55, 7, 0.50, 55, 8, 0.250, 60, 9, 0.250, 59, 9.50, 0.250, 57, 10.0, 0.250, 55, 10.50, 0.250, 53, 11, 0.250, 57, 12.00, 0.5, 55, 13.00, 0.250, 53, 13.50, 0.250, 52, 14, 0.250, 50, 14.50, 0.250, 48, 15, 0.50, 48, 16.00, 0.50};
+//movement positions: {time to move at (seconds), midi note to move to}; play note then move
+const float mp[4] = {0.0, 52, 0.5, 48};
+const int startmove = p[0];
 
 class atTime {
 	public:
@@ -81,8 +82,8 @@ int main()
 	atTime g[size];
     
     string f = "\nconst int p[" + to_string(size+1) + "][2] = {";
-	int ppos = mp[1];
-	int pppos = mp[1];
+	int ppos = startmove;
+	int pppos = startmove;
 	string uf;
 	for (int t=0;t<size;t++) { // t+1th atTime in g
 		uf = "{";
@@ -92,18 +93,17 @@ int main()
 			break;
 		}
 		string spos = to_string(halfNotes(pppos, ppos));
-		if (t == 0) spos = to_string(halfNotes(12, ppos));
 		uf += spos + ", ";
 		string uff = "100000000";
 		// loop through p
 		for (int i = 1; i<sizeof(p)/sizeof(double); i+=3) {
-			if (t*arrayTime >= p[i] && t*arrayTime < p[i+1] + p[i]) uff[(halfNotes(ppos, p[i-1])/2)+1] = '1';
+			if (t*arrayTime >= p[i] && t*arrayTime < p[i+1] + p[i]) uff[(halfNotes(pppos, p[i-1])/2)+1] = '1';
 			// Is true if at time t p[i-1] is held down at time t
 		}
 		uf += to_string(stoi(uff, 0, 2)) + "}, ";
 		f += uf;
 	}
-	f += "{0, 256}};\nconst int arrSize = " + to_string(size+1) + ";\nconst double arrayTime = " + to_string(arrayTime) + ";\n\n";
+	f += "{0, 256}};\nconst int arrSize = " + to_string(size+1) + ";\nconst double arrayTime = " + to_string(arrayTime) + ";\nconst int startmove = " + to_string(startmove) + ";\n\n";
 	editFile(f);
 	//cout << f;
 }
