@@ -74,8 +74,8 @@ void setup()
 
   for (int i = 0; i < 8; i++) {pinMode(solenoid[i], OUTPUT); digitalWrite(solenoid[i], LOW);}
 
-  play();
   delay(5000);
+  play();
 }
 
 void loop() {

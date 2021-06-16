@@ -65,7 +65,7 @@ long toDec(int dec)
   return b3.toInt();
 }
 
-
+int pos = startmove;
 void play()
 {
   //move to starting pos then wait
@@ -94,6 +94,7 @@ void play()
     delay(arrayTime*1000);
     Serial.print("waiting ");
     Serial.println(arrayTime*1000);
+    pos += p[t][0];
     wt = mmove(p[t][0]); //wasted time while moving in ms
     Serial.print("wt = ");
     Serial.println(wt);
@@ -116,6 +117,25 @@ void setup()
 
   play();
   delay(5000);
+  mmove(28 - pos); // Move to interraction (C)
+
+  float inter[32]; // timestamps for when to play chords
+  int startTime = millis();
+  short counter = 0;
+  while (true) {
+    if (millis() - startTime == inter[counter]*1000) {
+      digitalWrite(solenoid[0], HIGH);
+      digitalWrite(solenoid[2], HIGH);
+      digitalWrite(solenoid[4], HIGH);
+      delay(100);
+      digitalWrite(solenoid[0], LOW);
+      digitalWrite(solenoid[2], LOW);
+      digitalWrite(solenoid[4], LOW);
+      counter++;
+    }
+  }
+
+
   digitalWrite(enPin, HIGH);
 }
 
