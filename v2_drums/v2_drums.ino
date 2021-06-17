@@ -1,9 +1,9 @@
 bool sb = false;
 const int solenoid[7] = {A0, A1, A2, A3, A4, A5, 11};
 
-const int d[15] = {136, 128, 136, 128, 192, 128, 136, 128, 136, 128, 136, 136, 200, 128, 128};
-const int arrSize = 15;
-const double arrayTime = 0.500000;
+const int d[30] = {136, 128, 128, 128, 136, 128, 128, 128, 136, 128, 128, 128, 192, 128, 128, 128, 136, 128, 128, 128, 136, 128, 136, 128, 136, 128, 128, 128, 200, 128};
+const int arrSize = 30;
+const double arrayTime = 0.250000;
 
 int dig(long val, int n)
 {
@@ -59,7 +59,7 @@ void setup()
   while (!sb) {}
   Serial.println("Starting\n");
 
-  for (int i = 0; i < 8; i++) {pinMode(solenoid[i], OUTPUT); digitalWrite(solenoid[i], LOW);}
+  for (int i = 0; i < 7; i++) {pinMode(solenoid[i], OUTPUT); digitalWrite(solenoid[i], LOW);}
 
   play();
   delay(5000);

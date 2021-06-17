@@ -7,7 +7,7 @@ using namespace std;
 // Time between elements of final array (in seconds)
 const double arrayTime = 0.5;
 // Input array = {midi value, start time}
-const double d[20] = {36, 0.00, 36, 1.00, 38, 2.00, 36, 3.00, 36, 4.00, 36, 5.00, 36, 5.50, 38, 6.00, 36, 6.00, 36, 7.00};
+const double d[20] = {36, 0.00, 36, 1.00, 36, 2.00, 38, 3.00, 36, 4.00, 36, 5.00, 36, 5.50, 36, 6.00, 36, 7.00, 38, 7.00};
 
 const int midi_length = 7;
 const int midi[midi_length] = {38, 50, 51, 36, 42, 52, 53};
@@ -32,7 +32,7 @@ void editFile(string str_replace)		//NEEDS EDITING
 int main()
 {
 	//Generate empty array
-	int size = (d[sizeof(d)/sizeof(double)-1])/arrayTime; //length of final array: length of track / arrayTime
+	int size = (d[sizeof(d)/sizeof(double)-1])/arrayTime +1; //length of final array: length of track / arrayTime
     
     string f = "\nconst int d[" + to_string(size+1) + "] = {";
 	string uf;
@@ -44,7 +44,6 @@ int main()
 				for (int j = 0; j<midi_length; j++) {
 					if (midi[j] == d[i-1]) {
 						uf[j+1] = '1';
-						break;
 					}
 				}
 			}
