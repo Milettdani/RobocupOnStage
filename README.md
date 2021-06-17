@@ -1,5 +1,8 @@
 # RoboCupOnStage
 
+## Communication
+rpi sends start signals and new midi to both instruments.
+
 ## To-do list
 - [X] rpi console
 - [ ] drum lights
