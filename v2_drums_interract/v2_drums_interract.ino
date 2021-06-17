@@ -37,14 +37,18 @@ void play()
 {
   int wt;
   long dec;
+
+  unsigned long startTime = millis(), noteTime = 0;
+  
   for (int t=0; t<arrSize; t++) {
+    noteTime = !noteTime ? startTime : noteTime; noteTime += (arrayTime * 1000);
     dec = toDec(d[t]);
     for (int b=0; b<7; b++) {
       digitalWrite(solenoid[b], dig(dec, b));
       Serial.println(dig(dec, b));
     }
     Serial.println("\n");
-    delay(arrayTime*1000);
+    while(millis() - startTime < noteTime);
   }
 }
 
@@ -68,13 +72,12 @@ void setup()
 
   pinMode(2, INPUT);
   attachInterrupt(digitalPinToInterrupt(2), start, RISING);
+
+  for (int i = 0; i < 8; i++) {pinMode(solenoid[i], OUTPUT); digitalWrite(solenoid[i], LOW);}
   
   while (!sb) {}
   Serial.println("Starting\n");
-
-  for (int i = 0; i < 8; i++) {pinMode(solenoid[i], OUTPUT); digitalWrite(solenoid[i], LOW);}
-
-  delay(5000);
+  
   play();
 }
 

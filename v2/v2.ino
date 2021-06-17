@@ -74,11 +74,13 @@ void play()
 
   int wt;
   long dec;
+  unsigned long startTime = millis(), noteTime = 0;
   for (int t=0; t<arrSize; t++) {
     Serial.println("\n");
     Serial.print("t = ");
     Serial.println(t);
     Serial.println("\n");
+    noteTime = !noteTime ? startTime : noteTime; noteTime += (arrayTime * 1000);
     dec = toDec(p[t][1]);
     for (int b=0; b<8; b++) {
       //Serial.println(dec);
@@ -91,7 +93,7 @@ void play()
     Serial.println("\n");
     //Serial.println("Moving...");
     //Serial.println(p[t][0]);
-    delay(arrayTime*1000);
+    while(millis() - startTime < noteTime);
     Serial.print("waiting ");
     Serial.println(arrayTime*1000);
     pos += p[t][0];
@@ -107,6 +109,7 @@ void play()
 void setup()
 {
   Serial.begin(9600);
+  delay(2000);
   Serial.println("Starting\n");
 
   for (int i = 0; i < 8; i++) {pinMode(solenoid[i], OUTPUT); digitalWrite(solenoid[i], LOW);}
@@ -116,7 +119,6 @@ void setup()
   digitalWrite(enPin, LOW); 
 
   play();
-  delay(5000);
   mmove(28 - pos); // Move to interraction (C)
 
   float inter[32]; // timestamps for when to play chords
