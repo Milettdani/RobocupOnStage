@@ -1,2 +1,11 @@
 # RoboCupOnStage
-I have nothing to say yet, but we should add a README because it will help explain everything to the judges and Jozsi ba'
+
+## To-do list
+- [X] rpi console
+- [ ] drum lights
+- [ ] piano lights
+- [ ] obs controller
+- [ ] MIDI file(s)
+- [ ] communicator
+- [ ] clapper servos
+- [ ] calpper ttb
