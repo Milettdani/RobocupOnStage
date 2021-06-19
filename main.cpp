@@ -62,7 +62,7 @@ int toMidi(int m, int h)	//Finds midi-value of note that is [h] half notes away 
 void editFile(string str_replace)
 {
 	ostringstream text;
-	ifstream in_file("v2/v2.ino");
+	ifstream in_file("Piano/Piano.ino");
 
 	text << in_file.rdbuf();
 	string str = text.str();
