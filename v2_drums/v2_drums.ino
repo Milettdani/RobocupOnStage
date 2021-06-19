@@ -34,16 +34,16 @@ long toDec(int dec)
 }
 
 
-void play()
+void play(int dd[], as, at)
 {
   int wt;
   long dec;
 
   unsigned long startTime = millis(), noteTime = 0;
   
-  for (int t=0; t<arrSize; t++) {
-    noteTime = !noteTime ? startTime : noteTime; noteTime += (arrayTime * 1000);
-    dec = toDec(d[t]);
+  for (int t=0; t<as; t++) {
+    noteTime = !noteTime ? startTime : noteTime; noteTime += (at * 1000);
+    dec = toDec(dd[t]);
     for (int b=0; b<7; b++) {
       digitalWrite(solenoid[b], dig(dec, b));
       Serial.println(dig(dec, b));
@@ -65,8 +65,14 @@ void setup()
 
   for (int i = 0; i < 7; i++) {pinMode(solenoid[i], OUTPUT); digitalWrite(solenoid[i], LOW);}
 
-  play();
-  delay(5000);
+  play(d, arrSize, arrayTime);
+
+  const int arrayTime2;
+  const int arrSize2;
+  const int d2[arrSize2]; //Get these from communication
+
+  //Wait for start 2
+  play(d2, arrSize2, arrayTime);
 }
 
 void loop() {
