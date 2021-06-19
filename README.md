@@ -31,3 +31,9 @@ and the guitar
 
 [Video](https://github.com/) &
 [Raw Materials](https://github.com/)
+
+
+## TODO:
+- [ ] Make `main_drums.cpp` read array from .txt
+- [ ] Make `main_drums.cpp` write arrays to .txt files.
+- [ ] Make communicators write to serial from .txt-s
