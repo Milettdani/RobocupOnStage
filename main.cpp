@@ -71,7 +71,7 @@ void editFile(string str_replace)
 	str.replace(pos+4, pos2 - (pos+4), str_replace);
 	in_file.close();
 
-	ofstream out_file("v2/v2.ino");
+	ofstream out_file("Piano/Piano.ino");
 	out_file << str;
 }
 
