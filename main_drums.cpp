@@ -16,7 +16,7 @@ const int midi[midi_length] = {38, 50, 51, 36, 42, 52, 53};
 void editFile(string str_replace)		//NEEDS EDITING
 {
 	ostringstream text;
-	ifstream in_file("v2_drums/v2_drums.ino");
+	ifstream in_file("Drums/Drums.ino");
 
 	text << in_file.rdbuf();
 	string str = text.str();
