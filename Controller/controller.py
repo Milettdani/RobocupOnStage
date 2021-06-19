@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import time, serial
 from obswebsocket import obsws, requests
-from serial.serialutil import SerialException
 
 SERVER_HOST = "localhost"
 SERVER_PORT = 4444
@@ -77,7 +76,3 @@ class Controller:
     def write(self, data):
         for connection in self.connections:
             connection.write(data)
-
-if __name__ == '__main__':
-    controller = Controller()
-    controller.console()
