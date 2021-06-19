@@ -16,16 +16,16 @@ const int midi[midi_length] = {38, 50, 51, 36, 42, 52, 53};
 void editFile(string str_replace)		//NEEDS EDITING
 {
 	ostringstream text;
-	ifstream in_file("Drums/Drums.ino");
+	ifstream in_file("Drums/Melody.cpp");
 
 	text << in_file.rdbuf();
 	string str = text.str();
-	size_t pos = str.find("1};");
-	size_t pos2 = str.find("int dig(long");
-	str.replace(pos+4, pos2 - (pos+4), str_replace);
+	size_t pos = str.find("STARTMARK");
+	size_t pos2 = str.find("//ENDMARK");
+	str.replace(pos+1, pos2 - (pos+1), str_replace);
 	in_file.close();
 
-	ofstream out_file("v2_drums/v2_drums.ino");
+	ofstream out_file("Drums/Melody.cpp");
 	out_file << str;
 }
 
