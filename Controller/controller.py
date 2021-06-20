@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import time, serial
 from obswebsocket import obsws, requests
 
@@ -10,12 +9,16 @@ DELAY_TIME = 60 / 120
 TEXTFILE_NAME = 'TextFile.txt'
 BLANK_SCENE = 'Blank'
 NUMBERS = ['Number4', 'Number3', 'Number2', 'Number1']
-SCENES = {'PianoTitleScene': 1, 'DrumTitleScene': 1, 'PianoScene': 3, 'DrumScene': 3}
+SCENES = ['PianoTitleScene', 'DrumTitleScene',
+          'PianoScene', 'PianoScene', 'PianoScene',
+          'DrumScene', 'DrumScene', 'DrumScene']
 TITLES = ['ALMA', 'KÖRTE', 'RÉPA', 'PIROS', 'KÉK', 'ZÖLD', 'NEM']
 
 class Controller:
     def __init__(self):
         self.connections = list()
+        self.isPlaying = False
+        self.start_time = 0
 
     def start(self):
         self.server = obsws(SERVER_HOST, SERVER_PORT, SERVER_PASS)
@@ -44,43 +47,40 @@ class Controller:
         self.server.call(requests.SetCurrentScene(BLANK_SCENE))
         self.write(b'2')
     def console(self):
-        while True:
-            inp = input('CONSOLE > ')
-            if(inp == 'start'):
-                self.start()
-            elif(inp == 'run'):
-                try:
-                    self.run()
-                except KeyboardInterrupt:
-                    self.cancel()
-            elif(inp == 'stop'):
-                self.stop()
+        self.start()
+        input('ENTER')
+        self.startPlaying()
+        try:
+            while self.isPlaying:
+                self.obs(self.start_time)
+        except KeyboardInterrupt:
+            self.stopPlaying()
 
-    def count(self):
+    def startPlaying(self):
         for i in range(1, 5):
-            print(i)
+            print(5-i)
             self.server.call(requests.SetCurrentScene(NUMBERS[i-1]))
             time.sleep(DELAY_TIME*2)
-
-    
-    def run(self):
-        self.count()
         self.write(b'1')
-        start_time, scene_time = time.time(), 0
+        self.start_time = time.time()
+        self.isPlaying = True
         
-        scene_time = start_time if scene_time == 0 else scene_time
-        for title_index, title in enumerate(TITLES):
-            print(f'TITLE_INDEX > {title}\nTITLE > {title}')        
-            for scene_index, scene in enumerate(SCENES):
-                self.server.call(requests.SetCurrentScene(scene))
-                if scene_index == 2 and title != TITLES[-1]:
-                    with open(TEXTFILE_NAME, 'w') as text_file:
-                        text_file.write(TITLES[title_index + 1])
-                for _ in range(SCENES[scene]):
-                    scene_time += DELAY_TIME * 4
-                    print(f'SCENE_INDEX > {scene_index}\nSCENE > {scene}')
-                    while time.time() < scene_time:
-                        pass
+    def stopPlaying(self):
+        self.isPlaying = False
+        self.cancel()
+    
+    def obs(self, start_time):
+        if (time.time() - start_time) >= len(TITLES) * 16:
+            self.stopPlaying()
+            return
+        title_index = int(int(time.time() - start_time) / 16)
+        title = TITLES[title_index]
+        scene_index = int((time.time() - start_time) % 16 / 2)
+        scene = SCENES[scene_index]
+        self.server.call(requests.SetCurrentScene(scene))
+        if scene_index == 4 and title != TITLES[-1]:
+            with open(TEXTFILE_NAME, 'w') as text_file:
+                text_file.write(TITLES[title_index + 1])
     
     def write(self, data):
         for connection in self.connections:
