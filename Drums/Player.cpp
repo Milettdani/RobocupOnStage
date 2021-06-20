@@ -9,13 +9,12 @@ void Player::begin() { // ------------------------------------------------------
   for (int i = 0; i < 7; i++) pinMode(SOLENOIDS[i], OUTPUT);                                                                     // Set pinMode for solenoids
                                                                                                   // Set pinMode for buildt in LED
   FastLED.addLeds<WS2812, LED_PIN, BRG>(leds, NUM_LEDS);                                                                        // Set up FastLed library
-  FastLED.setBrightness(64);
+  //FastLED.setBrightness(64);
   FastLED.setMaxPowerInVoltsAndMilliamps(5, 500);
   reset();
 }
 void Player::reset() {
-  for(int i = 0; i < sizeof(leds) / sizeof(leds[0]); i++)
-    leds[i] = CRGB::Black;
+  FastLED.clear();
   FastLED.show();
   for(byte solenoid : SOLENOIDS)
     digitalWrite(solenoid, LOW);
@@ -79,42 +78,15 @@ unsigned long Player::play(int dd[], int as, double at, unsigned long startTime,
 }
 void Player::main() {
   while(Serial.available() > 0) {
-    byte data = Serial.read();
-    
-    if(data == '1') {
-      // STARTER
+    byte data = Serial.read();    
+    if(data == '1')
       startPlaying();
-    }
-    else if(data == '2') {
-      // STOPPER
+    else if(data == '2')
       stopPlaying();
-    }
-    else if(data == '3') {
-      // RECEIVER
-      
-    }
   }
   
-  
-  if(isPlaying)
+  if(isPlaying){
     noteTime = play(d, arrSize, arrayTime, startTime, noteTime);
     if(!noteTime) stopPlaying();
-
-  /*
-  const int arrayTime2 = Serial.read();
-  const int arrSize2 = Serial.read();
-  const int d2[arrSize2];
-  *//*
-  while(Serial.available() >= 3){
-    for (int i = 0; i < 3; i++){
-      incoming[i] = Serial.read();
-    }
-    servo0.write(incoming[0]);
-    servo1.write(incoming[1]);
-    servo2.write(incoming[2]);
   }
-  *//*
-  //Wait for start 2
-  //play(d2, arrSize2, arrayTime);*/
-  
 }

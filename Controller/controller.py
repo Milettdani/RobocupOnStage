@@ -9,6 +9,7 @@ DELAY_TIME = 60 / 120
 
 TEXTFILE_NAME = 'TextFile.txt'
 BLANK_SCENE = 'Blank'
+NUMBERS = ['Number4', 'Number3', 'Number2', 'Number1']
 SCENES = {'PianoTitleScene': 1, 'DrumTitleScene': 1, 'PianoScene': 3, 'DrumScene': 3}
 TITLES = ['ALMA', 'KÖRTE', 'RÉPA', 'PIROS', 'KÉK', 'ZÖLD', 'NEM']
 
@@ -54,8 +55,16 @@ class Controller:
                     self.cancel()
             elif(inp == 'stop'):
                 self.stop()
+
+    def count(self):
+        for i in range(1, 5):
+            print(i)
+            self.server.call(requests.SetCurrentScene(NUMBERS[i-1]))
+            time.sleep(DELAY_TIME*2)
+
     
     def run(self):
+        self.count()
         self.write(b'1')
         start_time, scene_time = time.time(), 0
         
