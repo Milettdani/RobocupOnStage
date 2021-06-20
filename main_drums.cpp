@@ -8,9 +8,6 @@ using namespace std;
 const double arrayTime = 0.25;
 // Input array = {midi value, start time}
 
-
-const double d[20] = {36, 0.00, 36, 1.00, 36, 2.00, 38, 3.00, 36, 4.00, 36, 5.00, 36, 5.50, 36, 6.00, 36, 7.00, 38, 7.00};
-
 const int midi_length = 7;
 const int midi[midi_length] = {38, 50, 51, 36, 42, 52, 53};
 //snare, tom1, tom2, tom3, hh, ride, crash
@@ -60,8 +57,17 @@ void writeInteract(int arr[], int as)
 
 int main()
 {
+	fstream dread;
+	dread.open("DrumsRead.txt", ios::in);
+	string tp;
+	getline(dread, tp)
+	int dSize = stoi(tp);
+	double d[dSize];
+	int counter = 0;
+	while (getline(dread, tp)) if (counter != 0) d[counter-1] = stod(tp);
+	
 	//Generate empty array
-	int size = (d[sizeof(d)/sizeof(double)-1])/arrayTime +1; //length of final array: length of track / arrayTime
+	int size = (d[dSize-1])/arrayTime +1; //length of final array: length of track / arrayTime
     
     	string f = "\nconst int d[" + to_string(size+1) + "] = {";
 	string uf;
@@ -69,7 +75,7 @@ int main()
 	for (int t=0;t<size;t++) { // t+1th atTime in g
 		uf = "10000000";
 		// loop through d
-		for (int i = 1; i<sizeof(d)/sizeof(double); i+=2) {
+		for (int i = 1; i<dSize; i+=2) {
 			if (t*arrayTime == d[i]) {
 				for (int j = 0; j<midi_length; j++) {
 					if (midi[j] == d[i-1]) {
