@@ -22,14 +22,6 @@ copyText.setSelectionRange(0, 99999);
 document.execCommand("copy");
 }
 
-function WriteToFile(arr)
-{
-var fso = new ActiveXObject("Scripting.FileSystemObject");
-var s = fso.CreateTextFile("C:\\drumsRead.txt", true);
-s.WriteLine(arr);
-s.Close();
-}
-
 var final = "";
 const input = document.querySelector('input[type="file"]');
 input.addEventListener('change', function (e) {
@@ -45,14 +37,21 @@ reader.onload = function() {
 		//Creat arrays
 		if (Object.size(parsedMusic.tracks[i].notes) > 0) {
 			var t = "";
+			var fw = "";
 			if (JSON.stringify(parsedMusic.tracks[i]).includes('isPercussion') && parsedMusic.tracks[i].isPercussion) {
 				if (d == true) {
 					t = "const double d" + "[" + Object.size(parsedMusic.tracks[i].notes) * 2 + "] = {"
+					fw = Object.size(parsedMusic.tracks[i].notes) * 2 + "\n";
 					for (var j = 0; j < Object.size(parsedMusic.tracks[i].notes); j++) {
-						if (j > 0) t += ", "
+						if (j > 0) {
+							t += ", ";
+							fw += "\n";
+						}
 						t += parsedMusic.tracks[i].notes[j].midi + ", " + parsedMusic.tracks[i].notes[j].time.toFixed(2);
+						fw += parsedMusic.tracks[i].notes[j].midi + "\n" + parsedMusic.tracks[i].notes[j].time.toFixed(2);
 					}
 					d = false;
+					console.log(fw);
 					//WriteToFile(t + "};");
 				}
 			} else {
@@ -66,6 +65,7 @@ reader.onload = function() {
 				}
 			}
 			final += t + "};\n"
+			if (i == Object.size(parsedMusic.tracks)-1) final += '\n\n' + fw;
 	}
 	}
 	//document.getElementById("resultTextarea").value = final;
@@ -74,5 +74,5 @@ reader.readAsText(input.files[0])
 }, false);
 
 function onSubmit() {
-document.getElementById("resultTextarea").value = final;
+	document.getElementById("resultTextarea").value = final;
 }
