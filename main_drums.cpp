@@ -33,14 +33,13 @@ void writeInteract(int arr[], int as)
 	string drumsw = to_string(as) + "\n";
 	string pianow = "";
 	for (int i=0; i<as; i++) {
-		drumsw += to_string(arr[i]);
+		drumsw += to_string(arr[i]) + "\n";
 		if (arr[i] == 136) {
 			pianow += i*arrayTime;
-			if (i != as-1) pianow += ", ";
+			if (i != as-1) pianow += "\n";
 		}
-		if (i != as-1) drumsw += ", ";
 	}
-	drumsw += "\n" + to_string(arrayTime);
+	drumsw += to_string(arrayTime);
 	
 	//Drums
 	fstream dout;
