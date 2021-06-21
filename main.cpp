@@ -33,8 +33,8 @@ int halfNotes(int a, int b) //Calculates distance between two notes in "half-not
 	int c2 = 12 - a%12;
 	
 	int om = m;
-	if (om > c1) m += ceil((float)om/(14+c1));
-	if (om > c2) m += ceil((float)om/(14+c2));
+	if (om >= c1) m += ceil((float)om/(14+c1));
+	if (om >= c2) m += ceil((float)om/(14+c2));
 	
 	if (b<a) m = -m + 1;
 	return m;
