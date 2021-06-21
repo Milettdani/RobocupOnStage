@@ -29,6 +29,9 @@ the solenoids are connected to a mosfet system identical to the one on the piano
 #### The Band
 During the performance the band, consisting of the two robots accompanied by us playing another piano and a guitar, will play a song together. The plan was to then ask a member of the jury to play something on the drums, that the drums will play back with an accompaniment form the piano, with which the drum communicates to tell it when it has to play. Unfortunately, due to COVID-19 and the event being held online, we cannot accomplish this, hence we had to play something on the drums instead of a jury member. :((
 
+#### Conclusion
+We hope you enjoyed this video and will enjoy our performance. Thank you for your attention! This was DDStudio.
+
 [Video](https://github.com/) &
 [Raw Materials](https://github.com/)
 
