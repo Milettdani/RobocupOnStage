@@ -43,13 +43,13 @@ void writeInteract(int arr[], int as)
 	
 	//Drums
 	fstream dout;
-	dout.open("test.txt", ios::out | ios::trunc);
+	dout.open("Controller/toDrums.txt", ios::out | ios::trunc);
 	dout << drumsw;
 	dout.close();
 	
 	//Piano
 	fstream pout;
-	pout.open("test.txt", ios::out | ios::trunc);
+	pout.open("Controller/toPiano.txt", ios::out | ios::trunc);
 	pout << pianow;
 	pout.close();
 }
