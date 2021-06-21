@@ -8,6 +8,8 @@ void setup() {
   Serial.begin(115200);
   player.begin();
   pinMode(LED_BUILTIN, OUTPUT); 
+  delay(2000);
+  Serial.print('D');
 }
 
 void loop() {

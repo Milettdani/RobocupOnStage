@@ -9,7 +9,7 @@ void Player::begin() { // ------------------------------------------------------
   for (int i = 0; i < 7; i++) pinMode(SOLENOIDS[i], OUTPUT);                                                                     // Set pinMode for solenoids
                                                                                                   // Set pinMode for buildt in LED
   FastLED.addLeds<WS2812, LED_PIN, BRG>(leds, NUM_LEDS);                                                                        // Set up FastLed library
-  //FastLED.setBrightness(64);
+  FastLED.setBrightness(64);
   FastLED.setMaxPowerInVoltsAndMilliamps(5, 500);
   reset();
 }
@@ -58,33 +58,37 @@ void Player::stopPlaying() {
 unsigned long Player::play(int dd[], int as, double at, unsigned long startTime, unsigned long noteTime) {
   int t = (millis() - startTime) / 250;
   if(t >= as) return 0;
-  Serial.print(t); Serial.print('\t');
-  Serial.print(millis() - startTime); Serial.print('\t');
-    
   noteTime += (at * 1000);
   bool keyArray[7] = {0};
   for (int i=0; i<7; i++) {
     keyArray[i] = dig(toDec(dd[t]), i);
     digitalWrite(SOLENOIDS[i], keyArray[i]);
-    Serial.print(keyArray[i] ? 'X' : '-');
   }
   for(int i = 0; i < sizeof(keyArray) / sizeof(keyArray[0]); i++)
     for(int n = 0; n < 2; n++)
-      leds[ledRemap[i]*2+n] = keyArray[i] ? CRGB::Red : CRGB::White;
+      leds[ledRemap[i]*2+n] = keyArray[i] ? CRGB::Red : CRGB::Black;
   FastLED.show();
-    
-  Serial.println();
   return noteTime;
 }
 void Player::main() {
   while(Serial.available() > 0) {
     byte data = Serial.read();    
-    if(data == '1')
+    if(data == '1') {
       startPlaying();
-    else if(data == '2')
+    }
+    else if(data == '2') {
       stopPlaying();
+    }
+    else if(data == 'S') {
+      int dataA = Serial.readStringUntil('X').toInt();
+      int dataB[dataA] = {0};
+      for(int i = 0; i < dataA; i++)
+        dataB[i] = Serial.readStringUntil('X').toInt();
+      double dataC = Serial.readStringUntil('X').toDouble();
+    }
   }
-  
+
+  //PLAY
   if(isPlaying){
     noteTime = play(d, arrSize, arrayTime, startTime, noteTime);
     if(!noteTime) stopPlaying();
