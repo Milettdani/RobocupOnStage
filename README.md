@@ -37,6 +37,5 @@ We hope you enjoyed this video and will enjoy our performance. Thank you for you
 
 
 ## TODO:
-- [ ] Make `main_drums.cpp` read array from .txt
-- [X] Make `main_drums.cpp` write arrays to .txt files.
-- [ ] Make communicators write to serial from .txt-s
+- [ ] Make .js check if only one track => drum interact; if 2 tracks => start: piano + drums
+- [ ] Remap drums in Drums.ino and main_drums.cpp
