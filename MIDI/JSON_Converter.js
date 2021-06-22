@@ -58,7 +58,7 @@ reader.onload = function() {
 			} else {
 				if (p == true) {
 					t = "const double p" + "[" + Object.size(parsedMusic.tracks[i].notes) * 3 + "] = {"
-					pw = parsedMusic.tracks[i].notes[0].midi + "\n" + Object.size(parsedMusic.tracks[i].notes) * 3;
+					pw = parsedMusic.tracks[i].notes[0].midi + "\n" + Object.size(parsedMusic.tracks[i].notes) * 3 + "\n";
 					for (var j = 0; j < Object.size(parsedMusic.tracks[i].notes); j++) {
 						if (j > 0) {
 							t += ", "
