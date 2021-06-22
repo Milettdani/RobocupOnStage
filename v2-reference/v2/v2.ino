@@ -119,7 +119,8 @@ void setup()
   digitalWrite(enPin, LOW); 
 
   play();
-  mmove(28 - pos); // Move to interraction (C)
+  //mmove(28 - pos); // Move to interraction (C)
+  //  ADD AN EXTRA MOVE AT THE END OF THE ARRAY INSTEAD
 
   float inter[32]; // timestamps for when to play chords
   int startTime = millis();
