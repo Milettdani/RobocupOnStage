@@ -58,7 +58,7 @@ reader.onload = function() {
 			} else {
 				if (p == true) {
 					t = "const double p" + "[" + Object.size(parsedMusic.tracks[i].notes) * 3 + "] = {"
-					pw = parsedMusic.tracks[i].notes[0].midi + Object.size(parsedMusic.tracks[i].notes) * 3;
+					pw = parsedMusic.tracks[i].notes[0].midi + "\n" + Object.size(parsedMusic.tracks[i].notes) * 3;
 					for (var j = 0; j < Object.size(parsedMusic.tracks[i].notes); j++) {
 						if (j > 0) {
 							t += ", "
@@ -71,7 +71,7 @@ reader.onload = function() {
 				}
 			}
 			final += t + "};\n"
-			if (i == Object.size(parsedMusic.tracks)-1) final += '\n\n' + fw + "\n" + pw;
+			if (i == Object.size(parsedMusic.tracks)-1) final += '\n\nDrums:\n' + fw + "\nPiano:\n" + pw;
 	}
 	}
 	//document.getElementById("resultTextarea").value = final;
