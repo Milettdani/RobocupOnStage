@@ -15,12 +15,21 @@ Object.size = function(obj) {
 	return size;
 };
 
-function Copy() {
+function CopyDrums() {
 var copyText = document.getElementById("resultTextarea");
+var text = document.getElementById("resultTextarea").value;
 copyText.select();
-copyText.setSelectionRange(0, 99999);
+copyText.setSelectionRange(text.indexOf("Drums:")+7, text.indexOf("Piano")-1);
 document.execCommand("copy");
-}
+}		//	PASTE INTO DrumsRead.txt
+
+function CopyPiano() {
+var copyText = document.getElementById("resultTextarea");
+var text = document.getElementById("resultTextarea").value;
+copyText.select();
+copyText.setSelectionRange(text.indexOf("Piano:")+7, 9999999);
+document.execCommand("copy");
+}		//	PASTE INTO PianoRead.txt
 
 var final = "";
 const input = document.querySelector('input[type="file"]');
@@ -74,11 +83,7 @@ reader.onload = function() {
 			if (i == Object.size(parsedMusic.tracks)-1) final += '\n\nDrums:\n' + fw + "\nPiano:\n" + pw;
 	}
 	}
-	//document.getElementById("resultTextarea").value = final;
+	document.getElementById("resultTextarea").value = final;
 }
 reader.readAsText(input.files[0])
 }, false);
-
-function onSubmit() {
-	document.getElementById("resultTextarea").value = final;
-}
