@@ -52,17 +52,20 @@ void Player::startPlaying() {
 }
 void Player::stopPlaying() {
   isPlaying = false;
+  Serial.println("\nEND\n\n");
   reset();
 }
 
 unsigned long Player::play(int dd[], int as, double at, unsigned long startTime, unsigned long noteTime) {
-  int t = (millis() - startTime) / 250;
+  int t = (millis() - startTime) / (at * 1000);
   if(t >= as) return 0;
   noteTime += (at * 1000);
   bool keyArray[7] = {0};
+  Serial.println();
   for (int i=0; i<7; i++) {
     keyArray[i] = dig(toDec(dd[t]), i);
     digitalWrite(SOLENOIDS[i], keyArray[i]);
+    Serial.print(keyArray[i]);
   }
   for(int i = 0; i < sizeof(keyArray) / sizeof(keyArray[0]); i++)
     for(int n = 0; n < 2; n++)
@@ -80,11 +83,13 @@ void Player::main() {
       stopPlaying();
     }
     else if(data == 'S') {
-      int dataA = Serial.readStringUntil('X').toInt();
-      int dataB[dataA] = {0};
-      for(int i = 0; i < dataA; i++)
-        dataB[i] = Serial.readStringUntil('X').toInt();
-      double dataC = Serial.readStringUntil('X').toDouble();
+      arrSize = Serial.readStringUntil('X').toInt();
+      d[arrSize] = {0};
+      for(int i = 0; i < arrSize; i++)
+        d[i] = Serial.readStringUntil('X').toInt();
+      arrayTime = Serial.readStringUntil('X').toDouble();
+
+      startPlaying();
     }
   }
 
