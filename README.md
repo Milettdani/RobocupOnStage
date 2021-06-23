@@ -41,3 +41,4 @@ We hope you enjoyed this video and will enjoy our performance. Thank you for you
 - [ ] Replace MIDI/DrumsRead.txt with DrumsRead.txt in `main_drums.cpp`
 - [ ] Recompile `main_drums.cpp`
 - [ ] Do the same thing with `main.cpp`, but replace `arrayTime` with text read
+- [ ] Edit JSON_Converter.js to work with single piano 
