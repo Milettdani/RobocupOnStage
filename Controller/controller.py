@@ -7,81 +7,86 @@ SERVER_PASS = "12345678"
 DELAY_TIME = 60 / 120
 
 TEXTFILE_NAME = 'TextFile.txt'
-BLANK_SCENE = 'Blank'
 NUMBERS = ['Number4', 'Number3', 'Number2', 'Number1']
 SCENES = ['PianoTitleScene', 'DrumTitleScene',
           'PianoScene', 'PianoScene', 'PianoScene',
           'DrumScene', 'DrumScene', 'DrumScene']
-TITLES = ['ALMA', 'KÖRTE', 'RÉPA', 'PIROS', 'KÉK', 'ZÖLD', 'NEM']
+TITLES = ['Ecuador', 'Pijanoo',
+          'Zombie Nation', 'Stereo Love',
+          'Lamour Toujours', 'Better Off Alone',
+          "I'm Blue"]
+
+
 
 class Controller:
     def __init__(self):
+        print('INIT')
         self.connections = {'P': 0, 'D': 0, 'C': 0}
         self.isPlaying = False
         self.start_time = 0
 
-    def start(self):
+
+
+    def connect(self):
+        print('CONNECT')
         self.server = obsws(SERVER_HOST, SERVER_PORT, SERVER_PASS)
         self.server.connect()
-        self.server.call(requests.SetCurrentScene(BLANK_SCENE))
+        self.server.call(requests.SetCurrentScene('StartScene'))
         with open(TEXTFILE_NAME, 'w') as text_file:
             text_file.write(TITLES[0])
-        for i in range(1, 100):
+        for i in range(1, 10):
             try:
                 connection = serial.Serial(port='COM' + str(i), baudrate=115200, timeout=0.1)
-                #connection.open()
-                
-                time.sleep(3)
+
+                print(f'Connection found on {connection.port}', end='')
                 data = ''
-                print('FOUND')
                 while data not in self.connections.keys():
+                    print('.', end='')
                     data = connection.read().decode()
-                    print(data)
                 self.connections[data] = connection
+                print(data)
             except:
                 pass
-        print(self.connections.keys())
-        print(self.connections)
         time.sleep(2)
-            
-    def stop(self):
-        self.cancel()
+
+
+        
+    def disconnect(self):
+        print('DISCONNECT')
         self.server.disconnect()
-        for connection in self.connections:
-            connection.close()
-        quit()
+        for connection in self.connections.values():
+            if not connection == 0:
+                connection.close()
 
+    
+        
     def cancel(self):
-        self.server.call(requests.SetCurrentScene(BLANK_SCENE))
-        self.write('X', b'2')
-    def console(self):
-        self.start()
-        input('ENTER')
-        self.special()
-        self.startPlaying()
-        try:
-            while self.isPlaying:
-                self.obs(self.start_time)
-        except KeyboardInterrupt:
-            self.stopPlaying()
+        print('CANCEL')
+        self.server.call(requests.SetCurrentScene('CancelScene'))
+        self.write('X', 'B'.encode())
 
-    def startPlaying(self):
+
+        
+    def stop(self):
+        self.server.call(requests.SetCurrentScene('StopScene'))
+
+    
+
+    def start(self):
+        print('START')
         for i in range(1, 5):
             print(f'Counting {5-i}')
             self.server.call(requests.SetCurrentScene(NUMBERS[i-1]))
             time.sleep(DELAY_TIME*2)
-        self.write('X', b'1')
+        self.write('X', 'A'.encode())
         self.start_time = time.time()
         self.isPlaying = True
+
+
         
-    def stopPlaying(self):
-        self.isPlaying = False
-        self.cancel()
-    
-    def obs(self, start_time):
-        '''if (time.time() - start_time) >= len(TITLES) * 16:
-            self.stopPlaying()
-            return'''
+    def main(self, start_time):
+        if (time.time() - start_time) >= len(TITLES) * 16:
+            return
         title_index = int(int(time.time() - start_time) / 16)
         title = TITLES[title_index]
         scene_index = int((time.time() - start_time) % 16 / 2)
@@ -91,6 +96,8 @@ class Controller:
         if scene_index == 4 and title != TITLES[-1]:
             with open(TEXTFILE_NAME, 'w') as text_file:
                 text_file.write(TITLES[title_index + 1])
+
+
     
     def write(self, slave, data):
         if slave == 'X':
@@ -100,6 +107,55 @@ class Controller:
         else:
             if not self.connections[slave] == 0:
                 self.connections[slave].write(data)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def special(self):
         #FOR DRUM
@@ -117,10 +173,11 @@ class Controller:
         text_file = open("toPiano.txt", "r")
         data_length = len(text_file.readlines())
         string = 'S'
+        self.write('P', f'{data_length}X'.encode())
         for i in range(data_length-1):
             data = text_file.readline()
             print(data)
-            #string += f'{data}X'
+            string += f'{data}X'
         self.write('P', string.encode())
         
         text_file.close()

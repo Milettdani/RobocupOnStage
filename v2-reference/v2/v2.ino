@@ -68,42 +68,39 @@ long toDec(int dec)
 int pos = startmove;
 void play()
 {
-  //move to starting pos then wait
-  mmove(startmove);
-  //delay(5000);
-
   int wt;
   long dec;
-  unsigned long startTime = millis(), noteTime = 0;
+  //unsigned long startTime = millis(), noteTime = 0;
+  unsigned long startTime = millis();
+  int testTime = millis();
+  bool a = true;
   for (int t=0; t<arrSize; t++) {
-    Serial.println("\n");
-    Serial.print("t = ");
-    Serial.println(t);
-    Serial.println("\n");
-    noteTime = !noteTime ? startTime : noteTime; noteTime += (arrayTime * 1000);
+    //noteTime = !noteTime ? startTime : noteTime; noteTime += (arrayTime * 1000);
     dec = toDec(p[t][1]);
     for (int b=0; b<8; b++) {
       //Serial.println(dec);
       //Serial.println(b);
       digitalWrite(solenoid[b], dig(dec, b));
-      Serial.println(dig(dec, b));
-      //Serial.println(dig(dec, b));
-      //Serial.println("\n");
+      Serial.print(dig(dec, b));
     }
-    Serial.println("\n");
     //Serial.println("Moving...");
     //Serial.println(p[t][0]);
-    while(millis() - startTime < noteTime);
-    Serial.print("waiting ");
-    Serial.println(arrayTime*1000);
+    //
+    delay(arrayTime*1000 - (millis() - startTime) + wt - a);
+    startTime = millis();// - ((millis() - startTime) - 250);
+    a = !a;
+    //Serial.println(startTime);
+    //Serial.print('\t');
+    //Serial.print(millis()-startTime);
     pos += p[t][0];
-    wt = mmove(p[t][0]); //wasted time while moving in ms
-    Serial.print("wt = ");
-    Serial.println(wt);
-    Serial.println("\n");
+    wt = mmove(p[t][0]);
+    //Serial.print('\t');
+    //Serial.print(arrayTime*1000-wt);
+    //Serial.println();
     if (round(((float)wt/1000)/arrayTime) > 0) t += round(((float)wt/1000)/arrayTime) -1;
-    //Serial.println("\n");
+    //while(millis() - startTime < noteTime);
   }
+  Serial.println(millis() - testTime);
 }
 
 void setup()
@@ -118,6 +115,17 @@ void setup()
   pinMode(enPin, OUTPUT);
   digitalWrite(enPin, LOW); 
 
+  //move to starting pos then wait
+  mmove(startmove);
+  //delay(5000);
+  Serial.println("END");
+
+  bool contin = true;
+  while(contin)
+    while(Serial.available() > 0)
+      if(Serial.read() == '1')
+        contin = false;
+        
   play();
   mmove(28 - pos); // Move to interraction (C)
 
