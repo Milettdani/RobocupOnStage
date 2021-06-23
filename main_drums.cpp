@@ -1,4 +1,5 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
 #include <fstream>
 #include <sstream>
 #include <math.h>
@@ -19,7 +20,7 @@ void editFile(string str_replace)		//NEEDS EDITING
 
 	text << in_file.rdbuf();
 	string str = text.str();
-	size_t pos = str.find("STARTMARK");
+	size_t pos = str.find("S");
 	size_t pos2 = str.find("//ENDMARK");
 	str.replace(pos+1, pos2 - (pos+1), str_replace);
 	in_file.close();
@@ -35,7 +36,7 @@ void writeInteract(int arr[], int as)
 	for (int i=0; i<as; i++) {
 		drumsw += to_string(arr[i]) + "\n";
 		if (arr[i] == 136) {
-			pianow += i*arrayTime;
+			pianow += to_string(i*arrayTime);
 			if (i != as-1) pianow += "\n";
 		}
 	}
@@ -57,13 +58,16 @@ void writeInteract(int arr[], int as)
 int main()
 {
 	fstream dread;
-	dread.open("DrumsRead.txt", ios::in);
+	dread.open("MIDI/DrumsRead.txt", ios::in);
 	string tp;
-	getline(dread, tp)
+	getline(dread, tp);
 	int dSize = stoi(tp);
 	double d[dSize];
 	int counter = 0;
-	while (getline(dread, tp)) if (counter != 0) d[counter-1] = stod(tp);
+	while (getline(dread, tp)) {
+        d[counter] = stod(tp);
+        counter++;
+    }
 	
 	//Generate empty array
 	int size = (d[dSize-1])/arrayTime +1; //length of final array: length of track / arrayTime
