@@ -14,6 +14,7 @@ double arrayTime = 0.0;
 const int midi_length = 7;
 const int midi[midi_length] = {51, 49, 40, 48, 43, 46, 47};
 //ride, crash, snare, tom high, tom low, hh, tom mid
+const int tomArr = 192;
 
 void editFile(string str_replace)		//NEEDS EDITING
 {
@@ -37,7 +38,7 @@ void writeInteract(int arr[], int as)
 	string pianow = "";
 	for (int i=0; i<as; i++) {
 		drumsw += to_string(arr[i]) + "\n";
-		if (arr[i] == 136) {
+		if (arr[i] == tomArr) {
 			pianow += to_string(i*arrayTime);
 			if (i != as-1) pianow += "\n";
 		}
@@ -76,7 +77,7 @@ int main()
 	//Generate empty array
 	int size = (d[dSize-1])/arrayTime +1; //length of final array: length of track / arrayTime
     
-    	string f = "\nconst int d[" + to_string(size+1) + "] = {";
+    	string f = "\nint d[" + to_string(size+1) + "] = {";
 	string uf;
 	int of[size];
 	for (int t=0;t<size;t++) { // t+1th atTime in g
@@ -96,7 +97,7 @@ int main()
 		uf = to_string(of[t]) + ", ";
 		f += uf;
 	}
-	f += "128};\nconst int arrSize = " + to_string(size+1) + ";\nconst double arrayTime = " + to_string(arrayTime) + ";\n\n";
+	f += "128};\nint arrSize = " + to_string(size+1) + ";\ndouble arrayTime = " + to_string(arrayTime) + ";\n\n";
 	editFile(f);
 	writeInteract(of, size);
 	//cout << f;
