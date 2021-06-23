@@ -12,8 +12,20 @@ void playInteract(int interSize, float inter[])
 }
 ```
 
-## About The Project
-...
+## Run Plan
+1. Put long MIDI into HTML
+2. Paste out into DrumsRead.txt
+3. run main_drums.exe -> into toDrums and toPiano.txt
+4. run Drums.ino in Arduino
+5. send start signal
+
+### Interaction:
+
+6. upload short MIDI to HTML
+7. paste out into DrumsRead.txt
+8. run main_drums.exe
+9. send array from toDrums.txt (with "X" instead of "\n") to Drums, send array from toPiano.txt (with "X" instead of "\n") to Piano + 2nd start signal
+
 
 ## Video Script
 #### Title & Identification
