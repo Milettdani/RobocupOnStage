@@ -34,16 +34,19 @@ void editFile(string str_replace)		//NEEDS EDITING
 
 void writeInteract(int arr[], int as)
 {
+	int counter = 0;
 	string drumsw = to_string(as) + "\n";
-	string pianow = "";
+	string pianow = "\n";
 	for (int i=0; i<as; i++) {
 		drumsw += to_string(arr[i]) + "\n";
 		if (arr[i] == tomArr) {
+			counter++;
 			pianow += to_string(i*arrayTime);
 			if (i != as-1) pianow += "\n";
 		}
 	}
 	drumsw += to_string(arrayTime);
+	pianow = to_string(counter) + pianow;
 	
 	//Drums
 	fstream dout;
