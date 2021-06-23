@@ -12,7 +12,7 @@ double arrayTime = 0.0;
 
 //Test sorrend: tom low, snare, hh, tom mid, tom high, crash <-> ride
 const int midi_length = 7;
-const int midi[midi_length] = {51, 49, 43, 48, 38, 46, 47};
+const int midi[midi_length] = {51, 49, 40, 48, 43, 46, 47};
 //ride, crash, snare, tom high, tom low, hh, tom mid
 
 void editFile(string str_replace)		//NEEDS EDITING
