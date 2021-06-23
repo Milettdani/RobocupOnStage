@@ -123,7 +123,24 @@ void setup()
       if(Serial.read() == 'A')
         contin = false;
 
+  
   play();
+  contin = true;
+    while(contin)
+      while(Serial.available() > 0)
+        if(Serial.read() == 'S') {
+          int dataLength = Serial.readStringUntil('X').toInt();
+          arrB[] = new double[dataLength];
+          for(int i = 0; i < dataLength; i++)
+            arrB[i] = Serial.readStringUntil('X').toDouble();
+          Serial.println(dataLength);
+
+          /*
+           * PLAY 2
+           */
+          contin = false;
+        }
+    
   mmove(28 - pos); // Move to interraction (C)
 
   float inter[32]; // timestamps for when to play chords
