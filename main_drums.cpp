@@ -6,6 +6,7 @@
 using namespace std;
 
 // Time between elements of final array (in seconds)
+double arrayTime = 0.0;
 // Input array = {midi value, start time}
 
 
@@ -62,7 +63,7 @@ int main()
 	dread.open("DrumsRead.txt", ios::in);
 	string tp;
 	getline(dread, tp);
-	double arrayTime = stod(tp);
+	arrayTime = stod(tp);
 	getline(dread, tp);
 	int dSize = stoi(tp);
 	double d[dSize];
