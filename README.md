@@ -1,4 +1,17 @@
 <!-- ABOUT THE PROJECT -->
+## Piano Interact
+```cpp
+void playInteract(int interSize, float inter[])
+{
+  for (int i = 0; i<interSize; i++) {
+    digitalWrite(solenoid[i%3 * 2], HIGH);
+    int del = i<interSize-1 ? 1000*(inter[i+1] - inter[i]) -25 > 750 ? 750 : 1000*(inter[i+1] - inter[i]) -25 : 750;
+    delay(del);
+    digitalWrite(solenoid[i%3 * 2], LOW);
+  }
+}
+```
+
 ## About The Project
 ...
 
