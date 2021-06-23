@@ -42,4 +42,4 @@ We hope you enjoyed this video and will enjoy our performance. Thank you for you
 - [ ] Recompile `main_drums.cpp`
 - [X] Do the same thing with `main.cpp`, but replace `arrayTime` with text read
 - [ ] Recompile `main.cpp`
-- [ ] Edit JSON_Converter.js to work with single piano 
+- [X] Edit JSON_Converter.js to work with single piano and 2 track
