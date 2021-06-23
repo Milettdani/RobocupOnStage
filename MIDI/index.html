@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>DDStudio JSON to C Array 2021</title>
+<style>
+body {
+	font-family: "Roboto Mono", monospace;
+}
+
+#Results {
+			max-width: 500px;
+			height: 200px;
+			margin: 10px auto;
+			color: black;
+			width: 95%;
+			position: relative;
+			border: 2px solid transparent;
+		}
+
+#Results textarea {
+			position: relative;
+			border: 2px solid black;
+			width: 75%;
+			height: 75%;
+			padding: 20px 4.7%;
+			left: 0px;
+			text-align: left;
+		}
+</style>
+</head>
+<body>
+  <h1 style="text-align: center">JSON to C Arrays</h1>
+  <h3 style="text-align: center;">Go to MIDI to JSON <a href="MIDI_to_JSON.html">here</a></h3>
+  <br><br>
+  <div style="text-align: center">
+    <form class="form" id="myForm" style="text-align: center;">
+      <lable for="file" style="text-align: center;">Select JSON file:</label>
+      <input type="File" name="file" accept=".json" id="inpFile" style="text-align: center;"><br><br>
+    </form>
+  </div>
+  <div id="Results">
+	<textarea id="resultTextarea"></textarea>
+  </div>
+  <div style="text-align: center; position: relative;">
+  	<button onclick="CopyPiano()" type="button" style="text-align: center;">Copy Piano</button>
+	<button onclick="CopyDrums()" type="button" style="text-align: center;">Copy Drums</button>
+  </div>
+  <script src="JSON_Converter.js"></script>
+</body>
+</html>
