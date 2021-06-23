@@ -54,7 +54,7 @@ reader.onload = function() {
 			var t = "";
 			var fw = "";
 			var pw = "";
-			if (((JSON.stringify(parsedMusic.tracks[i]).includes('isPercussion') && parsedMusic.tracks[i].isPercussion) || Object.size(parsedMusic.tracks) == 1  || !p) && !singlePiano) {
+			if ((JSON.stringify(parsedMusic.tracks[i]).includes('isPercussion') && parsedMusic.tracks[i].isPercussion) || Object.size(parsedMusic.tracks  || !p) == 1) {
 				if (d == true) {
 					t = "const double d" + "[" + Object.size(parsedMusic.tracks[i].notes) * 2 + "] = {"
 					fw = Object.size(parsedMusic.tracks[i].notes) * 2 + "\n";
@@ -67,7 +67,7 @@ reader.onload = function() {
 						fw += parsedMusic.tracks[i].notes[j].midi + "\n" + parsedMusic.tracks[i].notes[j].time.toFixed(2);
 					}
 					d = false;
-					console.log(fw);
+					//console.log(fw);
 					//WriteToFile(t + "};");
 				}
 			} else {
@@ -86,6 +86,7 @@ reader.onload = function() {
 				}
 			}
 			final += t + "};\n"
+			console.log(pw);
 			if (i == Object.size(parsedMusic.tracks)-1) final += '\n\nDrums:\n' + fw + "\nPiano:\n" + pw;
 	}
 	}

@@ -2,10 +2,10 @@
 const int solenoid[8] = { A0, A1, A2, A3, A4, A5, 11, 12 }; //move after notes played: e.g.: {4, 384}: play(384), wait arrayTime, move 4
 const int dirPin = 6, stepPin = 7, enPin = 5;
 
-const int p[67][2] = {{4, 384}, {0, 256}, {-4, 384}, {0, 256}, {0, 384}, {0, 384}, {0, 416}, {0, 384}, {0, 264}, {0, 264}, {0, 256}, {0, 256}, {0, 264}, {0, 264}, {0, 256}, {0, 256}, {0, 384}, {0, 256}, {0, 288}, {0, 256}, {0, 384}, {0, 256}, {0, 288}, {0, 256}, {0, 264}, {0, 264}, {0, 256}, {0, 256}, {0, 264}, {0, 256}, {0, 256}, {0, 256}, {0, 257}, {0, 256}, {0, 258}, {0, 256}, {0, 260}, {0, 256}, {0, 264}, {0, 256}, {0, 272}, {0, 256}, {0, 256}, {0, 256}, {0, 260}, {0, 260}, {0, 256}, {0, 256}, {0, 264}, {0, 256}, {0, 272}, {0, 256}, {0, 288}, {0, 256}, {0, 320}, {0, 256}, {0, 384}, {0, 384}, {0, 256}, {0, 256}, {0, 384}, {0, 384}, {0, 256}};
-const int arrSize = 67;
+const int p[13][2] = {{0, 288}, {0, 288}, {0, 384}, {0, 392}, {0, 264}, {0, 258}, {0, 264}, {0, 320}, {0, 288}, {0, 288}, {0, 384}, {0, 392}, {0, 256}};
+const int arrSize = 13;
 const double arrayTime = 0.250000;
-const int startmove = 28;
+const int startmove = 54;
 
 int mmove(int value)
 {
@@ -68,19 +68,18 @@ long toDec(int dec)
 int pos = startmove;
 void play()
 {
+  Serial.println("helo");
   //move to starting pos then wait
   mmove(startmove);
   //delay(5000);
 
   int wt;
   long dec;
-  unsigned long startTime = millis(), noteTime = 0;
   for (int t=0; t<arrSize; t++) {
     Serial.println("\n");
     Serial.print("t = ");
     Serial.println(t);
     Serial.println("\n");
-    noteTime = !noteTime ? startTime : noteTime; noteTime += (arrayTime * 1000);
     dec = toDec(p[t][1]);
     for (int b=0; b<8; b++) {
       //Serial.println(dec);
@@ -93,7 +92,7 @@ void play()
     Serial.println("\n");
     //Serial.println("Moving...");
     //Serial.println(p[t][0]);
-    while(millis() - startTime < noteTime);
+    delay(arrayTime*1000);
     Serial.print("waiting ");
     Serial.println(arrayTime*1000);
     pos += p[t][0];
@@ -117,6 +116,12 @@ void setup()
   pinMode(dirPin, OUTPUT);
   pinMode(enPin, OUTPUT);
   digitalWrite(enPin, LOW); 
+
+  bool contin = true;
+  while(contin)
+    while(Serial.available() > 0)
+      if(Serial.read() == 'A')
+        contin = false;
 
   play();
   mmove(28 - pos); // Move to interraction (C)
