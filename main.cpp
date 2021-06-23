@@ -5,7 +5,6 @@
 using namespace std;
 
 // Time between elements of final array (in seconds)
-const double arrayTime = 0.25;
 // Input array = {midi value, start time, hold time}
 //movement positions: {time to move at (seconds), midi note to move to}; play note then move
 
@@ -76,8 +75,10 @@ int main()
 {
     //Find array
     fstream pread;
-	pread.open("MIDI/PianoRead.txt", ios::in);
+	pread.open("PianoRead.txt", ios::in);
 	string tp;
+	getline(pread, tp);
+	double arrayTime = stod(tp);
 	getline(pread, tp);
     int startmove = stoi(tp);
     getline(pread, tp);
