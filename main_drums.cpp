@@ -59,7 +59,7 @@ void writeInteract(int arr[], int as)
 int main()
 {
 	fstream dread;
-	dread.open("MIDI/DrumsRead.txt", ios::in);
+	dread.open("DrumsRead.txt", ios::in);
 	string tp;
 	getline(dread, tp);
 	double arrayTime = stod(tp);
