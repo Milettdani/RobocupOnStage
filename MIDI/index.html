@@ -18,7 +18,7 @@ body {
 		}
 
 #Results textarea {
-			position: absolute;
+			position: relative;
 			border: 2px solid black;
 			width: 75%;
 			height: 75%;
@@ -41,9 +41,9 @@ body {
   <div id="Results">
 	<textarea id="resultTextarea"></textarea>
   </div>
-  <div style="text-align: center;">
-	<button type="button" onclick="onSubmit()" style="text-align: center;">Convert</button>
-	<button onclick="Copy()" type="button" style="text-align: center;">Copy to Clipboard</button>
+  <div style="text-align: center; position: relative;">
+  	<button onclick="CopyPiano()" type="button" style="text-align: center;">Copy Piano</button>
+	<button onclick="CopyDrums()" type="button" style="text-align: center;">Copy Drums</button>
   </div>
   <script src="JSON_Converter.js"></script>
 </body>
