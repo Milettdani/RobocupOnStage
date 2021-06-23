@@ -31,6 +31,12 @@ copyText.setSelectionRange(text.indexOf("Piano:")+7, 9999999);
 document.execCommand("copy");
 }		//	PASTE INTO PianoRead.txt
 
+var singlePiano = false;
+function onPianoClick()
+{
+	singlePiano = true;
+}
+
 var final = "";
 const input = document.querySelector('input[type="file"]');
 input.addEventListener('change', function (e) {
@@ -48,7 +54,7 @@ reader.onload = function() {
 			var t = "";
 			var fw = "";
 			var pw = "";
-			if ((JSON.stringify(parsedMusic.tracks[i]).includes('isPercussion') && parsedMusic.tracks[i].isPercussion) || Object.size(parsedMusic.tracks || !p) == 1) {
+			if (((JSON.stringify(parsedMusic.tracks[i]).includes('isPercussion') && parsedMusic.tracks[i].isPercussion) || Object.size(parsedMusic.tracks) == 1  || !p) && !singlePiano) {
 				if (d == true) {
 					t = "const double d" + "[" + Object.size(parsedMusic.tracks[i].notes) * 2 + "] = {"
 					fw = Object.size(parsedMusic.tracks[i].notes) * 2 + "\n";
