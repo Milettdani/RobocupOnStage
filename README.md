@@ -37,6 +37,4 @@ We hope you enjoyed this video and will enjoy our performance. Thank you for you
 
 
 ## TODO:
-- [ ] Make `main_drums.cpp` read array from .txt
-- [X] Make `main_drums.cpp` write arrays to .txt files.
-- [ ] Make communicators write to serial from .txt-s
+- [ ] Move DrumsRead.txt and PianoRead.txt out of MIDI/
