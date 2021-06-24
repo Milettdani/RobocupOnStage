@@ -48,6 +48,7 @@ void Player::updateSerial() {
     byte data = Serial.read();
     if(data == 'A' && !played) 
       playMelodies();
+      played = true;
     else if(data == 'B')
       resetFunc();
   }
