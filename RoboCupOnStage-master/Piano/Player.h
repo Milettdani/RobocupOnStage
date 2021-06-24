@@ -15,7 +15,6 @@ class Player { // --------------------------------------------------------------
     void lamourToujours(), betterOffAlone(), wakeMeUp(), imBlue();
     void playMelodies(), updateSerial();
     int counter = 0, startTime = 0;
-    bool played = false;
   private:                                                                                                                      // Private things
     const byte solenoids[8] = {A0, A1, A2, A3, A4, A5, 11, 12};                                                                 // Solenoid pins
     const byte dirPin = 6, stepPin = 7, enPin = 5, debugPin = 13;                                                               // Motor and Debug pins
