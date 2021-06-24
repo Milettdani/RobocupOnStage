@@ -75,10 +75,9 @@ unsigned long Player::play(int dd[], int as, double at, unsigned long startTime,
 }
 void Player::main() {
   while(Serial.available() > 0) {
-    byte data = Serial.read();    
-    if(data == 'A' && !played) {
+    byte data = Serial.read();
+    if(data == 'A') {
       startPlaying();
-      played = true;
     }
     else if(data == 'B') {
       stopPlaying();
@@ -89,14 +88,15 @@ void Player::main() {
       for(int i = 0; i < arrSize; i++)
         d[i] = Serial.readStringUntil('X').toInt();
       arrayTime = Serial.readStringUntil('X').toDouble();
+
+      while(Serial.available() > 0) {
+        byte data = Serial.read();
+        if(data == 'I') {
+            startPlaying();
+        }
+      }
     
       //startPlaying();
-      while(Serial.available() > 0) {
-    byte data = Serial.read(); 
-      if(data == 'A') {
-      startPlaying();
-    }
-      }
     }
   }
 
