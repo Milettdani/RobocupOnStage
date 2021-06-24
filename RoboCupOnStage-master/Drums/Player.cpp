@@ -19,6 +19,24 @@ void Player::reset() {
   for(byte solenoid : SOLENOIDS)
     digitalWrite(solenoid, LOW);
 }
+
+void Player::startInteract()
+{
+  Serial.println("wating for I and helo");
+  bool s = false;
+  while (!s) {
+    while(Serial.available() > 0) {
+      Serial.println("inside while");
+      byte data = Serial.read();
+      if(data == 'I') {
+        for (int i = 0; i<arrSize; i++) Serial.println(d[i]);
+        Serial.println("found I!! :)");
+        startPlaying();
+      }
+    }
+  }
+}
+
 int Player::dig(long val, int n)
 {
   String g = String(val);
@@ -88,14 +106,8 @@ void Player::main() {
       for(int i = 0; i < arrSize; i++)
         d[i] = Serial.readStringUntil('X').toInt();
       arrayTime = Serial.readStringUntil('X').toDouble();
-
-      while(Serial.available() > 0) {
-        byte data = Serial.read();
-        if(data == 'I') {
-            startPlaying();
-        }
-      }
-    
+      Serial.println("Got data");
+      startInteract();
       //startPlaying();
     }
   }
