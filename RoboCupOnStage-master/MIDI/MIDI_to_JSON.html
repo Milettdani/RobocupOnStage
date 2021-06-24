@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>DDstudio MDIDI to JSON 2021</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script type="text/javascript" src="MidiConvert.js"></script>
+	<style type="text/css">
+		body {
+			font-family: "Roboto Mono", monospace;
+			text-align: center;
+			margin: 0px;
+		}
+
+		#FileDrop {
+			max-width: 500px;
+			height: 200px;
+			border: 2px dashed black;
+			margin: 10px auto;
+			color: black;
+			width: 95%;
+			position: relative;
+		}
+
+		#FileDrop.Hover {
+			background-color: black;
+			color: white;
+		}
+
+		#FileDrop input {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+			left: 0px;
+			top: 0px;
+		}
+
+		#FileDrop #Text {
+			position: absolute;
+			width: 90%;
+			height: 100%;
+			padding: 100px 5%;
+			left: 0px;
+			text-align: center;
+		}
+
+		#Results {
+			max-width: 500px;
+			height: 200px;
+			margin: 10px auto;
+			color: black;
+			width: 95%;
+			position: relative;
+			border: 2px solid transparent;
+		}
+
+		#Results textarea {
+			position: absolute;
+			border: 2px solid lightgrey;
+			width: 90%;
+			height: 100%;
+			padding: 20px 4.7%;
+			left: 0px;
+			text-align: left;
+		}
+
+		#downloadJSON {
+			left: 39%;
+			position: absolute;
+			bottom: -70%;
+		}
+
+	</style>
+</head>
+
+<body>
+    <h3>Go to JSON to Array <a href="index.html">here</a></h3><br>
+	<div id="FileDrop">
+		<div id="Text">
+			Drop a midi file here
+		</div>
+		<input type="file" accept="audio/midi">
+	</div>
+	<div id="Results">
+		<h3>MIDI to JSON:</h3>
+		<textarea id="ResultsText"></textarea>
+		<button id="downloadJSON" type="button" onclick="download()">Download JSON file</button>
+	</div>
+	<script type="text/javascript">
+		if (!(window.File && window.FileReader && window.FileList && window.Blob)) {
+			document.querySelector("#FileDrop #Text").textContent = "Reading files not supported by this browser";
+		} else {
+			var fileDrop = document.querySelector("#FileDrop")
+			fileDrop.addEventListener("dragenter", function () {
+				fileDrop.classList.add("Hover");
+			});
+			fileDrop.addEventListener("dragleave", function () {
+				fileDrop.classList.remove("Hover");
+			});
+			fileDrop.addEventListener("drop", function () {
+				fileDrop.classList.remove("Hover");
+			});
+			document.querySelector("#FileDrop input").addEventListener("change", function (e) {
+				//get the files
+				var files = e.target.files;
+				if (files.length > 0) {
+					var file = files[0];
+					document.querySelector("#FileDrop #Text").textContent = file.name;
+					parseFile(file);
+				}
+			});
+		}
+
+		function parseFile(file) {
+			//read the file
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				var partsData = MidiConvert.parse(e.target.result);
+				document.querySelector("#ResultsText").value = JSON.stringify(partsData, undefined, 2);
+			};
+			reader.readAsBinaryString(file);
+		}
+
+		function download() {
+			var text = document.getElementById("ResultsText").value;
+			text = text.replace(/\n/g, "\r\n"); // To retain the Line breaks.
+			var blob = new Blob([text], {
+				type: "text/json"
+			});
+			var anchor = document.createElement("a");
+			anchor.download = "MIDI_to_JSON.json";
+			anchor.href = window.URL.createObjectURL(blob);
+			anchor.target = "_blank";
+			anchor.style.display = "none"; // just to be safe!
+			document.body.appendChild(anchor);
+			anchor.click();
+			document.body.removeChild(anchor);
+		}
+
+	</script>
+</body>
+
+</html>
