@@ -11,7 +11,6 @@ class Player { // --------------------------------------------------------------
     void begin();
     bool isPlaying = false;
     unsigned long startTime, noteTime;
-    bool played = false;
   private:                                                                                                                      // Private things
     int dig(long val, int n);
     long toDec(int dec);
