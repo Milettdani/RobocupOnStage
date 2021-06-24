@@ -65,8 +65,13 @@ long Player::toDec(int dec)
   return b3.toInt();
 }
 void Player::startPlaying() {
+  //Serial.println("helo");
   isPlaying = true;
-  startTime = millis(), noteTime = startTime;
+  //Serial.println(isPlaying);
+  for (int i = 0; i<arrSize; i++) {
+    startTime = millis(), noteTime = startTime;
+    main();
+  }
 }
 void Player::stopPlaying() {
   isPlaying = false;
@@ -75,6 +80,7 @@ void Player::stopPlaying() {
 }
 
 unsigned long Player::play(int dd[], int as, double at, unsigned long startTime, unsigned long noteTime) {
+  //Serial.println("inside play");
   int t = (millis() - startTime) / (at * 1000);
   if(t >= as) return 0;
   noteTime += (at * 1000);
@@ -83,6 +89,7 @@ unsigned long Player::play(int dd[], int as, double at, unsigned long startTime,
   for (int i=0; i<7; i++) {
     keyArray[i] = dig(toDec(dd[t]), i);
     digitalWrite(SOLENOIDS[i], keyArray[i]);
+    //Serial.println("helo");
     Serial.print(keyArray[i]);
   }
   for(int i = 0; i < sizeof(keyArray) / sizeof(keyArray[0]); i++)
@@ -106,7 +113,7 @@ void Player::main() {
       for(int i = 0; i < arrSize; i++)
         d[i] = Serial.readStringUntil('X').toInt();
       arrayTime = Serial.readStringUntil('X').toDouble();
-      Serial.println("Got data");
+      //Serial.println("Got data");
       startInteract();
       //startPlaying();
     }
@@ -114,6 +121,7 @@ void Player::main() {
 
   //PLAY
   if(isPlaying){
+    //Serial.println("inside main");
     noteTime = play(d, arrSize, arrayTime, startTime, noteTime);
     if(!noteTime) stopPlaying();
   }
