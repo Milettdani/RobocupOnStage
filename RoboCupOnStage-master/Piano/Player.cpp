@@ -54,7 +54,8 @@ void Player::updateSerial() {
     if(data == 'A') {
       playMelodies();
     }else if(data == 'B'){
-      resetFunc();}
+      resetFunc();
+    } else if (data == 'E')
   }
 }
 void Player::playBeat(Beat beat, Beat nextBeat, int bpm) { // ----------------------------------------------------------------- // Beat Player
