@@ -16,9 +16,10 @@ void Player::playInteract(int interSize, float inter[])
   while (!s) {
     while(Serial.available() > 0) {
       byte data = Serial.read();
-      if(data == 'A') {
+      if(data == 'I') {
         s = true;
       }
+      Serial.println("waiting for signal...");
     }
  }
   unsigned long startTime = millis();
@@ -47,9 +48,8 @@ void Player::moveNote(int value) { // ------------------------------------------
 void Player::updateSerial() {
   while(Serial.available() > 0) {
     byte data = Serial.read();
-    if(data == 'A' && !played) {
+    if(data == 'A') {
       playMelodies();
-      played = true;
     }else if(data == 'B'){
       resetFunc();}
   }
