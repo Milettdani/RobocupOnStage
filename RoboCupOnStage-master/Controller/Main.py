@@ -11,7 +11,7 @@ if __name__ == '__main__':
         input("special...")
         controller.special()
         input("start interact")
-        controller.write('X', b'A')
+        controller.write('X', b'I')
         controller.stop()
         
     except KeyboardInterrupt:
