@@ -10,6 +10,20 @@ void Player::begin() { // ------------------------------------------------------
   digitalWrite(enPin, LOW);
 }
 
+void Player::playInteract(int interSize, float inter[])
+{
+  unsigned long startTime = millis();
+  for (int i = 0; i<interSize; i++) {
+    while (millis() - startTime < inter[i]*1000);
+    digitalWrite(solenoids[i%3 * 2], HIGH);
+    Serial.println(i%3 * 2);
+    int del = i<interSize-1 ? 1000*(inter[i+1] - inter[i]) -25 > 750 ? 750 : 1000*(inter[i+1] - inter[i]) -25 : 750;
+    delay(del);
+    digitalWrite(solenoids[i%3 * 2], LOW);
+  }
+}
+
+
 void Player::moveNote(int value) { // ----------------------------------------------------------------------------------------- // Move Half Note
   if (value == 0) return 0;
   else if (value < 0) digitalWrite(dirPin, HIGH);                                                                               // Change MoveDir
@@ -85,7 +99,7 @@ int Player::toBeep(String text) { // -------------------------------------------
 }
 
 void Player::playMelodies() { // ---------------------------------------------------------------------------------------------- // Play Melodies
-  //start();
+  //start();  
   ecuador();
   pijanoo();
   zombieNation();
@@ -94,6 +108,23 @@ void Player::playMelodies() { // -----------------------------------------------
   betterOffAlone();
   //wakeMeUp();
   imBlue();
+
+  bool contin = true;
+    while(contin)
+      while(Serial.available() > 0)
+        if(Serial.read() == 'S') {
+          int dataLength = Serial.readStringUntil('X').toInt();
+          float arrB[dataLength];// = new double[dataLength];
+          for(int i = 0; i < dataLength; i++)
+            arrB[i] = Serial.readStringUntil('X').toDouble();
+          playInteract(dataLength, arrB);
+
+          /*
+           * PLAY 2
+           */
+          contin = false;
+        }
+        Serial.println("END");
 }
 void Player::start() {
   const Beat startBeats[] = {
