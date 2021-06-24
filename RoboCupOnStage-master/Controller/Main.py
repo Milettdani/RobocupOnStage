@@ -8,13 +8,14 @@ if __name__ == '__main__':
         controller.start()
         while controller.isPlaying:
             controller.main(controller.start_time)
-        
-        input()
+        input("special...")
         controller.special()
-        input()
-        controller.write('X', 'A')
+        input("start interact")
+        controller.write('X', b'A')
         controller.stop()
+        
     except KeyboardInterrupt:
         controller.cancel()
     finally:
+        
         controller.disconnect()

@@ -12,14 +12,15 @@ void Player::begin() { // ------------------------------------------------------
 
 void Player::playInteract(int interSize, float inter[])
 {
-  bool start = false;
-  while (!start) {
-  while(Serial.available() > 0) {
-    byte data = Serial.read();
-    if(data == 'A') 
-      start = true;
-  }
-  }
+  bool s = false;
+  while (!s) {
+    while(Serial.available() > 0) {
+      byte data = Serial.read();
+      if(data == 'A') {
+        s = true;
+      }
+    }
+ }
   unsigned long startTime = millis();
   for (int i = 0; i<interSize; i++) {
     while (millis() - startTime < inter[i]*1000);
@@ -46,11 +47,11 @@ void Player::moveNote(int value) { // ------------------------------------------
 void Player::updateSerial() {
   while(Serial.available() > 0) {
     byte data = Serial.read();
-    if(data == 'A' && !played) 
+    if(data == 'A' && !played) {
       playMelodies();
       played = true;
-    else if(data == 'B')
-      resetFunc();
+    }else if(data == 'B'){
+      resetFunc();}
   }
 }
 void Player::playBeat(Beat beat, Beat nextBeat, int bpm) { // ----------------------------------------------------------------- // Beat Player
@@ -112,11 +113,11 @@ void Player::playMelodies() { // -----------------------------------------------
   ecuador();
   pijanoo();
   zombieNation();
-  stereoLove();
-  lamourToujours();
-  betterOffAlone();
+  //stereoLove();
+  //lamourToujours();
+  //betterOffAlone();
   //wakeMeUp();
-  imBlue();
+  //imBlue();
 
   bool contin = true;
     while(contin)
@@ -125,7 +126,7 @@ void Player::playMelodies() { // -----------------------------------------------
           int dataLength = Serial.readStringUntil('X').toInt();
           float arrB[dataLength];// = new double[dataLength];
           for(int i = 0; i < dataLength; i++)
-            arrB[i] = Serial.readStringUntil('X').toDouble();
+            arrB[i] = Serial.readStringUntil('X').toFloat();
           playInteract(dataLength, arrB);
 
           /*

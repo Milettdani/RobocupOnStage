@@ -10,6 +10,7 @@ class Player { // --------------------------------------------------------------
     void moveNote(int value);
     int toBeep(String text);
     void playBeat(Beat beat, Beat nextBeat, int bpm);
+    void playInteract(int interSize, float inter[]);
     void start(), ecuador(), pijanoo(), zombieNation(), stereoLove();
     void lamourToujours(), betterOffAlone(), wakeMeUp(), imBlue();
     void playMelodies(), updateSerial();

@@ -12,8 +12,7 @@ SCENES = ['PianoTitleScene', 'DrumTitleScene',
           'PianoScene', 'PianoScene', 'PianoScene',
           'DrumScene', 'DrumScene', 'DrumScene']
 TITLES = ['Ecuador', 'Pijanoo',
-          'Zombie Nation', 'Stereo Love',
-          'Lamour Toujours']
+          'Zombie Nation']
 
 
 
@@ -87,8 +86,7 @@ class Controller:
         
     def main(self, start_time):
         if (time.time() - start_time) >= len(TITLES) * 16:
-            input()
-            self.special()
+            self.isPlaying = False
             return
         title_index = int(int(time.time() - start_time) / 16)
         title = TITLES[title_index]
