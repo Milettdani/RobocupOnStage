@@ -13,6 +13,7 @@ class Player { // --------------------------------------------------------------
     unsigned long startTime, noteTime;
     void startInteract();
   private:
+    void(* resetFunc) (void) = 0;
     void startPlayingInter();
     int dig(long val, int n);
     long toDec(int dec);
