@@ -3,7 +3,7 @@
 #define Melody_h
  
 #include <Arduino.h>
-extern int d[];
-extern int arrSize;
-extern double arrayTime;
+extern short d[];
+extern short arrSize;
+extern float arrayTime;
 #endif
