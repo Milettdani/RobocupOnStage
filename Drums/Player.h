@@ -6,12 +6,14 @@
 
 class Player { // ------------------------------------------------------------------------------------------------------------- // Player class
   public:                                                                                                                       // Public things
-    unsigned long play(int dd[], int as, double at, unsigned long startTime, unsigned long noteTime);
+    unsigned long play(short dd[], short as, float at, unsigned long startTime, unsigned long noteTime);
     void main();
     void begin();
     bool isPlaying = false;
     unsigned long startTime, noteTime;
-  private:                                                                                                                      // Private things
+    void startInteract();
+  private:
+    void startPlayingInter();
     int dig(long val, int n);
     long toDec(int dec);
     void reset(), startPlaying(), stopPlaying();
