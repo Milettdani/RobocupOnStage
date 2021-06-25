@@ -62,9 +62,5 @@ We hope you enjoyed this video and will enjoy our performance. Thank you for you
 
 
 ## TODO:
-- [X] Move DrumsRead.txt and PianoRead.txt out of MIDI/
-- [X] Replace MIDI/DrumsRead.txt with DrumsRead.txt in `main_drums.cpp`
-- [X] Recompile `main_drums.cpp`
-- [X] Do the same thing with `main.cpp`, but replace `arrayTime` with text read
-- [X] Recompile `main.cpp`
-- [X] Edit JSON_Converter.js to work with single piano and 2 track
+- [ ] Change arrays from int to short, arrayTime from double to float
+- [ ] Maybe combine 2 elemts of array
