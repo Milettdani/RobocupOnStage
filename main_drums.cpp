@@ -80,7 +80,7 @@ int main()
 	//Generate empty array
 	int size = (d[dSize-1])/arrayTime +1; //length of final array: length of track / arrayTime
     
-    	string f = "\nint d[" + to_string(size+1) + "] = {";
+    	string f = "\nshort d[" + to_string(size+1) + "] = {";
 	string uf;
 	int of[size];
 	for (int t=0;t<size;t++) { // t+1th atTime in g
@@ -100,7 +100,7 @@ int main()
 		uf = to_string(of[t]) + ", ";
 		f += uf;
 	}
-	f += "128};\nint arrSize = " + to_string(size+1) + ";\ndouble arrayTime = " + to_string(arrayTime) + ";\n\n";
+	f += "128};\nshort arrSize = " + to_string(size+1) + ";\nfloat arrayTime = " + to_string(arrayTime) + ";\n\n";
 	editFile(f);
 	writeInteract(of, size);
 	//cout << f;
