@@ -43,6 +43,7 @@ void Player::startPlayingInter()
   for (int i = 0; i<sizeof(SOLENOIDS)/sizeof(SOLENOIDS[0]); i++) digitalWrite(SOLENOIDS[i], LOW);
   FastLED.clear();
   FastLED.show();
+  while (true) main();
 }
 
 void Player::startInteract()
@@ -131,7 +132,7 @@ void Player::main() {
       startPlaying();
     }
     else if(data == 'B') {
-      stopPlaying();
+      resetFunc();
     }
     else if(data == 'S') {
       Serial.println("Got S");
@@ -152,4 +153,4 @@ void Player::main() {
     noteTime = play(d, arrSize, arrayTime, startTime, noteTime);
     if(!noteTime) stopPlaying();
   }
-} 
+}
