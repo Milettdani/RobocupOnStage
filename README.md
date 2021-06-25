@@ -9,8 +9,8 @@
 -->
 
 Here is the 
-[MIDI](https://github.com/othneildrew/Best-README-Template/issues) and the
-[NOTE](https://github.com/othneildrew/Best-README-Template/issues) based software.
+[Midi](https://github.com/othneildrew/Best-README-Template/issues) and the
+[Note](https://github.com/othneildrew/Best-README-Template/issues) based software.
 
 #### Mechanical Systems
 <!--
