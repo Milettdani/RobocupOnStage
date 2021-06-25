@@ -38,6 +38,11 @@ void Player::startPlayingInter()
 
     delay(arrayTime*1000);
   }
+
+  //  Turn off solenoids
+  for (int i = 0; i<sizeof(SOLENOIDS)/sizeof(SOLENOIDS[0]); i++) digitalWrite(SOLENOIDS[i], LOW);
+  FastLED.clear();
+  FastLED.show();
 }
 
 void Player::startInteract()
@@ -147,4 +152,4 @@ void Player::main() {
     noteTime = play(d, arrSize, arrayTime, startTime, noteTime);
     if(!noteTime) stopPlaying();
   }
-}
+} 
