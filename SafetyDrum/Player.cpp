@@ -2,60 +2,63 @@
 #include "Arduino.h"                                                                                                            // Include libraries
 #include "Player.h"
 #include "Beat.h"
+#include <FastLED.h>
     
 void Player::begin() { // ----------------------------------------------------------------------------------------------------- // Constuctor
   for (int solenoid : solenoids) { pinMode(solenoid, OUTPUT); digitalWrite(solenoid, LOW); }                                    // Setup Solenoid PinModes
   pinMode(stepPin, OUTPUT); pinMode(dirPin, OUTPUT);                                                                            // Motor PinModes
-  pinMode(enPin, OUTPUT); pinMode(debugPin, OUTPUT);
-  digitalWrite(enPin, LOW);
+  pinMode(enPin, OUTPUT); pinMode(debugPin, OUTPUT);  
+  FastLED.addLeds<WS2812, LED_PIN, BRG>(leds, NUM_LEDS);
+  FastLED.setBrightness(64);
+  FastLED.setMaxPowerInVoltsAndMilliamps(5, 500);
+  FastLED.clear();
+  for(int i = 0; i < 2; i++)                                                                                                    // Set status LED
+    leds[ledRemap[2]+i] = CRGB::Red;
+  FastLED.show();                                                                                                               // Update LED Stript
 }
-
-void Player::playInteract(int interSize, float inter[])
-{
-  bool s = false;
-  //Serial.println("in playInteract()");
-  while (!s) {
-    //Serial.println("In outer while");
-    while(Serial.available() > 0) {
-      byte data = Serial.read();
-      if(data == 'I') {
-        s = true;
-      }
-    }
-    //Serial.println("out of looking for I");
- }
-  //Serial.println("out of outer while");
-  unsigned long startTime = millis();
-  for (int i = 0; i<interSize; i++) {
-    while (millis() - startTime < inter[i]*1000);
-    digitalWrite(solenoids[i%3 * 2], HIGH);
-    Serial.println(i%3 * 2);
-    int del = i<interSize-1 ? 1000*(inter[i+1] - inter[i]) -25 > 750 ? 750 : 1000*(inter[i+1] - inter[i]) -25 : 750;
-    delay(del);
-    digitalWrite(solenoids[i%3 * 2], LOW);
-  }
-}
-
-
 void Player::moveNote(int value) { // ----------------------------------------------------------------------------------------- // Move Half Note
   if (value == 0) return 0;
   else if (value < 0) digitalWrite(dirPin, HIGH);                                                                               // Change MoveDir
   else if (value > 0) digitalWrite(dirPin, LOW);                                                                                // Change MoveDir
   for (int i = 0; i < 588 * abs(value); i++) {                                                                                  // Move
     digitalWrite(stepPin, HIGH);
-    delayMicroseconds(96);
+    delayMicroseconds(80);
     digitalWrite(stepPin, LOW);
-    delayMicroseconds(96);
+    delayMicroseconds(80);
   }
 }
-void Player::updateSerial() {
+void Player::updateSerial() { // ---------------------------------------------------------------------------------------------- // UpdateSerial Function
   while(Serial.available() > 0) {
     byte data = Serial.read();
-    if(data == 'A') {
+    if(data == 'A')                                                                                                             // Serial start
       playMelodies();
-    }else if(data == 'B'){
+    else if(data == 'B')                                                                                                        // Serial stop / cancel
       resetFunc();
-    } else if (data == 'E')
+    else if(data == 'M') {                                                                                                       // Serial stop / cancel
+      isMuted = !isMuted;
+      if(isMuted) {
+        for(byte solenoid : solenoids)
+          digitalWrite(solenoid, LOW);
+        FastLED.clear();
+        FastLED.show();
+      }
+    }
+    else if(data == 'S')
+      overrideTime = millis();
+  }
+  if(isMuted) {
+    if(millis() < overrideTime + 250) {
+      isOverwritten = true;
+      digitalWrite(overridePin, HIGH);
+      for(int i = 0; i < 2; i++)
+        leds[ledRemap[3]*2+i] = CRGB::Red;
+      FastLED.show();
+    }
+    else {
+      digitalWrite(overridePin, LOW);
+      FastLED.clear();
+      FastLED.show();
+    }
   }
 }
 void Player::playBeat(Beat beat, Beat nextBeat, int bpm) { // ----------------------------------------------------------------- // Beat Player
@@ -67,25 +70,34 @@ void Player::playBeat(Beat beat, Beat nextBeat, int bpm) { // ------------------
     startKey = startKey / 2;
   }
   bool cmplxA = beat.move == 0 && beat.key == nextBeat.key, cmplxB = beat.move != 0;                                            // Logic for Complex Timing
-  float cmplxDel = cmplxA ? 60000 / bpm * 0.15 : cmplxB ? 112.896*abs(beat.move) : 0;                                             // Convert Logic into Values
+  float cmplxDel = cmplxA ? 60000 / bpm * 0.15 : cmplxB ? 94.08*abs(beat.move) : 0;                                             // Convert Logic into Values
   
-  Serial.print(counter++);                                  Serial.print("  ");                                                 // SerialPrint Datas
+  /*Serial.print(counter++);                                  Serial.print("  ");                                                 // SerialPrint Datas
   Serial.print(millis()-startTime);                         Serial.print("  ");
   Serial.print(lastTime);                                   Serial.print("  ");
-  for (bool i : startBin) Serial.print(i == 0 ? "-" : "1"); Serial.print("  ");
+  for (bool i : startBin) Serial.print(i == 0 || isMuted ? "-" : "1"); Serial.print("  ");
   Serial.print(beat.time);                                  Serial.print("  ");
   Serial.print("CMPLXA="); Serial.print(cmplxA);            Serial.print("  ");
   Serial.print("CMPLXB="); Serial.print(cmplxB);            Serial.print("  ");
   Serial.print("MOVE="); Serial.print(beat.move);           Serial.print("  ");
-  Serial.print(beat.debug);                                 Serial.println();
+  Serial.print(beat.debug);                                 Serial.println();*/
 
+  if(!isMuted) {
+    for(int i = 0; i < sizeof(startBin) / sizeof(startBin[0]); i++)
+      for(int n = 0; n < 2; n++)
+        leds[ledRemap[i]*2+n] = i == 0 || i == 1 || i == 5 ? startBin[i] ? CRGB::Red : CRGB::White : startBin[i] ? CRGB::Green : CRGB::White;
+    FastLED.show();
+  }
+  
+  
   lastTime += 60000 / bpm * beat.time;                                                                                          // Update the BeatEndTime
-  for (byte i = 0; i < 8; i++) digitalWrite(solenoids[i], startBin[i]);                                                         // DigitalWrite Solenoids
-  int beep = toBeep(beat.debug); if (beep) tone(debugPin, beep); else noTone(debugPin);                                         // Play Sound on Buzzer
-  while(millis() < lastTime-cmplxDel+startTime);                                                                                // Wait with Sound
-  for (byte i = 0; i < 8; i++) digitalWrite(solenoids[i], 0); noTone(debugPin);                                                 // Reset Solenoids
+  for (byte i = 0; i < 8; i++) digitalWrite(solenoids[i], isMuted ? solenoids[i] == overridePin ? isOverwritten : LOW : startBin[i]);                                                         // DigitalWrite Solenoids
+  //int beep = toBeep(beat.debug); if (beep) tone(debugPin, beep); else noTone(debugPin);                                         // Play Sound on Buzzer
+  while(millis() < lastTime-cmplxDel+startTime) updateSerial();                                                                                // Wait with Sound
+  if(!isMuted) for (byte i = 0; i < 8; i++) digitalWrite(solenoids[i], LOW); noTone(debugPin);                                                 // Reset Solenoids
+  for(CRGB led : leds) led = CRGB::White; FastLED.show();
   moveNote(beat.move);                                                                                                          // Move
-  while(millis() < lastTime+startTime);                                                                                         // Wait without Sound0
+  while(millis() < lastTime+startTime) updateSerial();                                                                                        // Wait without Sound0
 }
 int Player::toBeep(String text) { // ------------------------------------------------------------------------------------------ // String to Hz
   return
@@ -111,40 +123,33 @@ int Player::toBeep(String text) { // -------------------------------------------
     text == "A4" ? 440 : text == "A#4" ? 466 :
     text == "B4" ? 493 : 0;
 }
-
-void Player::playMelodies() { // ---------------------------------------------------------------------------------------------- // Play Melodies
-  //start();  
-  ecuador();
-  //pijanoo();
-  //zombieNation();
-  //stereoLove();
-  //lamourToujours();
-  //betterOffAlone();
-  //wakeMeUp();
-  //imBlue();
-  Serial.println("END");
-
-  bool contin = true;
-    while(contin)
-      while(Serial.available() > 0)
-        if(Serial.read() == 'S') {
-          int dataLength = Serial.readStringUntil('X').toInt();
-          float arrB[dataLength];// = new double[dataLength];
-          for(int i = 0; i < dataLength; i++)
-            arrB[i] = Serial.readStringUntil('X').toFloat();
-          Serial.println("going into playInteract()");
-          playInteract(dataLength, arrB);
-
-          /*
-           * PLAY 2
-           */
-          contin = false;
-        }
-        Serial.println("END");
+void Player::flag() {
+  for(int i = 0; i < 2; i++) {
+    for(int n = 0; i < 7; n++) {
+      if(n == 0 || n == 1 || n == 2)
+        leds[ledRemap[i]+n] = CRGB::Red;
+      else if(n == 3 || n == 4 || n == 5)
+        leds[ledRemap[i]+n] = CRGB::White;
+      else if(n == 6)
+        leds[ledRemap[i]+n] = CRGB::Green;
+    }
+  }
 }
-void Player::start() {
+void Player::playMelodies() { // ---------------------------------------------------------------------------------------------- // Play Melodies
+  //start();
+  ecuador();
+  pijanoo();
+  zombieNation();
+  stereoLove();
+  lamourToujours();
+  betterOffAlone();
+  //wakeMeUp();
+  imBlue();
+  flag();
+}
+void Player::start() { // --------------------------------------------------------------------------------------------------- // Ecuador 4x8 beats
   const Beat startBeats[] = {
-    Beat(0, 1, 0), Beat(0, 1, 0), Beat(0, 1, 0), Beat(0, 1, 0),
+    Beat(2, 1, 0), Beat(2, 1, 0), Beat(2, 1, 0), Beat(2, 1, 0),
 
     Beat(16, 0, 0)
   }; for (int n = 0; n < sizeof(startBeats) / sizeof(startBeats[0]) - 1; n++) playBeat(startBeats[n], startBeats[n + 1], melodyBPM);
@@ -215,6 +220,7 @@ void Player::lamourToujours() { // ---------------------------------------------
   }; for (int n = 0; n < sizeof(lamourToujoursBeats) / sizeof(lamourToujoursBeats[0]) - 1; n++) playBeat(lamourToujoursBeats[n], lamourToujoursBeats[n + 1], melodyBPM);
 }
 void Player::betterOffAlone() { // -------------------------------------------------------------------------------------------- // Better Off Alone 4x8 beats
+  isMuted = true;
   const Beat betterOffAloneBeats[] = {                       
     Beat(4, 0.5, 1, "B3"),  Beat(0, 0.5, 1),           Beat(8, 0.5, -1, "B3"),  Beat(16, 0.5, 1, "G#3"), Beat(0, 2, 2),
     Beat(0, 1.5, 1),        Beat(128, 0.5, 0, "F#3"),  Beat(1, 0.75, 0, "F#4"), Beat(1, 0.75, 0, "F#4"), Beat(4, 0.5, -1, "D#4"),
@@ -226,6 +232,7 @@ void Player::betterOffAlone() { // ---------------------------------------------
     Beat(0, 1.5, 0),        Beat(128, 0.5, -1, "F#3"), Beat(2, 0.75, 0, "E4"),  Beat(2, 0.75, 1, "E4"),  Beat(4, 0.5, -1, "D#4"),
     Beat(16, 0, 0)
   }; for (int n = 0; n < sizeof(betterOffAloneBeats) / sizeof(betterOffAloneBeats[0]) - 1; n++) playBeat(betterOffAloneBeats[n], betterOffAloneBeats[n + 1], melodyBPM);
+  isMuted = false;
 }
 void Player::wakeMeUp() { // -------------------------------------------------------------------------------------------------- // WON'T PLAY
   const Beat wakeMeUpBeats[] = {
