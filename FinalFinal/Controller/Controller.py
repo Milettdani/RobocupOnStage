@@ -118,51 +118,6 @@ class Controller:
                     print(connection.read().decode())
                     
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     def special(self):
         #FOR DRUM
         text_file = open("toDrums.txt", "r")
