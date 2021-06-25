@@ -7,7 +7,6 @@ using namespace std;
 // Time between elements of final array (in seconds)
 // Input array = {midi value, start time, hold time}
 //movement positions: {time to move at (seconds), midi note to move to}; play note then move
-float* mp;
 
 class atTime {
 	public:
@@ -72,31 +71,6 @@ void editFile(string str_replace)
 	out_file << str;
 }
 
-void movement(int startmove, int pSize, double p[])
-{
-	int pos = startmove;
-	mp[0] = 0.0;
-	mp[1] = (double)startmove;
-	//cout << mp[0] << endl << mp[1] << endl;
-	for (int i = 3; i<pSize; i+=3) {
-		if (isBlack(p[i]) != isBlack(pos)) {
-			mp[(i * 2) /3 +1] = pos+1;
-			mp[(i * 2) /3] = p[i+1];
-			pos += 1;
-		}
-		if (halfNotes(pos, p[i]) > 14) {
-			mp[(i * 2) /3 +1] = halfNotes(pos, p[i]) - 14;
-			mp[(i * 2) /3] = p[i+1];
-			pos = mp[(i * 2) /3 +1];
-		} else if (halfNotes(pos, p[i]) < 0) {
-			mp[(i * 2) /3 +1] = halfNotes(pos, p[i]);
-			mp[(i * 2) /3] = p[i+1];
-			pos = mp[(i * 2) /3 +1];
-		}
-		//cout << mp[(i*2)/3] << endl << mp[(i*2)/3 +1] << endl;
-	}
-}
-
 int main()
 {
     //Find array
@@ -111,15 +85,22 @@ int main()
 	int pSize = stoi(tp);
 	double p[pSize];
 	int counter = 0;
+    int mpSize;
 	while (getline(pread, tp)) {
         if (counter < pSize) {
             p[counter] = stod(tp);
             counter++;
+        } else {
+            mpSize = stoi(tp);
+            break;
         }
     }
-    
-    mp = new float[(pSize*2)/3];
-    movement(startmove, pSize, p);
+    float mp[mpSize];
+    counter = 0;
+    while (getline(pread, tp)) {
+        mp[counter] = stof(tp);
+        counter++;
+    }
 
 	//Generate empty array
 	int size = (p[pSize-1] + p[pSize-2])/arrayTime; //length of final array: length of track / arrayTime
@@ -132,7 +113,7 @@ int main()
 	for (int t=0;t<size;t++) { // t+1th atTime in g
 		uf = "{";
 		pppos = ppos;
-		for (int j = 0; j<pSize; j+=2) if (abs(mp[j] - t*arrayTime) < 0.005) {
+		for (int j = 0; j<mpSize; j+=2) if (abs(mp[j] - t*arrayTime) < 0.005) {
 			ppos = mp[j+1];
 			break;
 		}
