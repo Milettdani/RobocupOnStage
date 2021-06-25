@@ -12,6 +12,19 @@ void Player::begin() { // ------------------------------------------------------
 
 void Player::playInteract(int interSize, float inter[])
 {
+  bool s = false;
+  //Serial.println("in playInteract()");
+  while (!s) {
+    //Serial.println("In outer while");
+    while(Serial.available() > 0) {
+      byte data = Serial.read();
+      if(data == 'I') {
+        s = true;
+      }
+    }
+    //Serial.println("out of looking for I");
+ }
+  //Serial.println("out of outer while");
   unsigned long startTime = millis();
   for (int i = 0; i<interSize; i++) {
     while (millis() - startTime < inter[i]*1000);
@@ -38,10 +51,11 @@ void Player::moveNote(int value) { // ------------------------------------------
 void Player::updateSerial() {
   while(Serial.available() > 0) {
     byte data = Serial.read();
-    if(data == 'A') 
+    if(data == 'A') {
       playMelodies();
-    else if(data == 'B')
+    }else if(data == 'B'){
       resetFunc();
+    } else if (data == 'E')
   }
 }
 void Player::playBeat(Beat beat, Beat nextBeat, int bpm) { // ----------------------------------------------------------------- // Beat Player
@@ -101,13 +115,14 @@ int Player::toBeep(String text) { // -------------------------------------------
 void Player::playMelodies() { // ---------------------------------------------------------------------------------------------- // Play Melodies
   //start();  
   ecuador();
-  pijanoo();
-  zombieNation();
-  stereoLove();
-  lamourToujours();
-  betterOffAlone();
+  //pijanoo();
+  //zombieNation();
+  //stereoLove();
+  //lamourToujours();
+  //betterOffAlone();
   //wakeMeUp();
-  imBlue();
+  //imBlue();
+  Serial.println("END");
 
   bool contin = true;
     while(contin)
@@ -116,7 +131,8 @@ void Player::playMelodies() { // -----------------------------------------------
           int dataLength = Serial.readStringUntil('X').toInt();
           float arrB[dataLength];// = new double[dataLength];
           for(int i = 0; i < dataLength; i++)
-            arrB[i] = Serial.readStringUntil('X').toDouble();
+            arrB[i] = Serial.readStringUntil('X').toFloat();
+          Serial.println("going into playInteract()");
           playInteract(dataLength, arrB);
 
           /*
