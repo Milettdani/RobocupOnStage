@@ -109,8 +109,8 @@ int Player::toBeep(String text) { // -------------------------------------------
 void Player::playMelodies() { // ---------------------------------------------------------------------------------------------- // Play Melodies
   //start();  
   ecuador();
-  //pijanoo();
-  //zombieNation();
+  pijanoo();
+  zombieNation();
   //stereoLove();
   //lamourToujours();
   //betterOffAlone();
