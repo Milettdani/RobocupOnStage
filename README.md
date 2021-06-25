@@ -10,7 +10,7 @@
 
 Here is the 
 [MIDI](https://github.com/othneildrew/Best-README-Template/issues) and the
-[NOTE](https://github.com/othneildrew/Best-README-Template/issues) based sofrware.
+[NOTE](https://github.com/othneildrew/Best-README-Template/issues) based software.
 
 #### Mechanical Systems
 <!--
@@ -58,18 +58,3 @@ This information is then passed on to the controller program, which communicates
 <br><br>
 To make the drums more human we wanted to have two robotic arms, but we decided it would be too much time and not very efficient.
 We had to make the piano as steady and stable as possible, so we decided it should have 1 dimension of movement.
-
-
-
-
-
-#### David xd
-* Latest MIDI
-* main.cpp (with movement)
-* latest main_drums.cpp
-* Drums safety with clapper
-* Drums midi
-* Piano safety with interact
-* Piano MIDI with interact!
-* controller with clapper and special
-* Clapper code
