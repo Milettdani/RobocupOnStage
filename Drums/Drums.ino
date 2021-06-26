@@ -42,17 +42,21 @@ long toDec(int dec)
 
 void play()
 {
+  /*
   bool playing = false;
   while (!playing) {
     while (Serial.available() > 0) {
       byte data = Serial.read();
       if(data == 'A') playing = true;
     }
-  }
+  }*/
+  unsigned long startTime = millis();
   for (int counter = 0; counter < arrSize; counter++) {
     while(Serial.available() > 0) {
       byte data = Serial.read();
-      if(data == 'B') break;
+      if(data == 'B') {
+        return;
+      }
     }
 
     if (counter >= arrSize) return;
@@ -72,7 +76,9 @@ void play()
     }
     FastLED.show();
 
-    while (millis() < arrayTime*1000*(counter+1));
+    while (millis() - startTime < arrayTime*500*(counter+1));
+    for (byte solenoid : solenoids) digitalWrite(solenoid, LOW);
+    while (millis() - startTime < arrayTime*1000*(counter+1));
   }
   resetFunc();
 }
@@ -91,7 +97,17 @@ void setup()
   FastLED.show();
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.print('D');
+  bool contin = false;
+  while (!contin) {
+    while(Serial.available() > 0) {
+      byte data = Serial.read();
+      if (data == 'B') resetFunc();
+      else if (data == 'A') contin = true;
+    }
+  }
+
   play();
+  resetFunc();
 }
 
 void loop()
