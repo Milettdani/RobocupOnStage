@@ -6,7 +6,7 @@
 using namespace std;
 
 // Time between elements of final array (in seconds)
-double arrayTime = 0.0;
+double arrayTime;
 // Input array = {midi value, start time}
 
 
@@ -21,7 +21,7 @@ void editFile(string str_replace)		//NEEDS EDITING
 {
 	cout << "\n\n" << str_replace;
 	ostringstream text;
-	ifstream in_file("Drums/Melody.cpp");
+	ifstream in_file("Drums/Drums.ino");
 
 	text << in_file.rdbuf();
 	string str = text.str();
@@ -30,7 +30,7 @@ void editFile(string str_replace)		//NEEDS EDITING
 	str.replace(pos+1, pos2 - (pos+1), str_replace);
 	in_file.close();
 
-	ofstream out_file("M/M.ino");
+	ofstream out_file("Drums/Drums.ino");
 	out_file << str;
 }
 
@@ -65,8 +65,6 @@ void writeInteract(int arr[], int as)
 
 int main()
 {
-	cout << "wanted sorrend:\nkick\nsnare\nhh\ntom low\ntom mid\n\n";
-
 	fstream dread;
 	dread.open("DrumsRead.txt", ios::in);
 	string tp;
@@ -84,7 +82,7 @@ int main()
 	//Generate empty array
 	int size = (d[dSize-1])/arrayTime +1; //length of final array: length of track / arrayTime
     
-    	string f = "\nshort dd[" + to_string(size+1) + "] = {";
+    	string f = "\nshort d[" + to_string(size+1) + "] = {";
 	string uf;
 	int of[size];
 	for (int t=0;t<size;t++) { // t+1th atTime in g
@@ -95,17 +93,19 @@ int main()
 				for (int j = 0; j<midi_length; j++) {
 					if (midi[j] == d[i-1]) {
 						uf[j+1] = '1';
-						cout << midiDeb[j] << endl;
+						//cout << midiDeb[j] << endl;
 					}
 				}
 			}
 			// Is true if at time t p[i-1] is held down at time t
 		}
+		for (int i = 1; i<8; i++) cout << uf[i];
+		cout << endl;
 		of[t] = stoi(uf, 0, 2);
 		uf = to_string(of[t]) + ", ";
 		f += uf;
 	}
-	f += "128};\nshort as = " + to_string(size+1) + ";\nfloat at = " + to_string(arrayTime) + ";\n\n";
+	f += "128};\nshort arrSize = " + to_string(size+1) + ";\nfloat arrayTime = " + to_string(arrayTime) + ";\n\n";
 	editFile(f);
 	writeInteract(of, size);
 	//cout << f;
