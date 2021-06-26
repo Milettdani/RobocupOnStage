@@ -6,15 +6,13 @@
 
 class Player { // ------------------------------------------------------------------------------------------------------------- // Player class
   public:                                                                                                                       // Public things
-    unsigned long play(short dd[], short as, float at, unsigned long startTime, unsigned long noteTime);
+    unsigned long play(unsigned long startTime, unsigned long noteTime);
     void main();
     void begin();
     bool isPlaying = false;
     unsigned long startTime, noteTime;
-    void startInteract();
   private:
     void(* resetFunc) (void) = 0;
-    void startPlayingInter();
     int dig(long val, int n);
     long toDec(int dec);
     void reset(), startPlaying(), stopPlaying();

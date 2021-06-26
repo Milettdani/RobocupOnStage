@@ -20,49 +20,6 @@ void Player::reset() {
     digitalWrite(solenoid, LOW);
 }
 
-void Player::startPlayingInter()
-{
-  for (int t = 0; t<arrSize; t++) {
-    bool keyArray[7] = {0};
-    Serial.println();
-    for (int i=0; i<7; i++) {
-      keyArray[i] = dig(toDec(d[t]), i);
-      digitalWrite(SOLENOIDS[i], keyArray[i]);
-      //Serial.println("helo");
-      Serial.print(keyArray[i]);
-    }
-    for(int i = 0; i < sizeof(keyArray) / sizeof(keyArray[0]); i++)
-      for(int n = 0; n < 2; n++)
-        leds[ledRemap[i]*2+n] = keyArray[i] ? CRGB::Red : CRGB::Black;
-    FastLED.show();
-
-    delay(arrayTime*1000);
-  }
-
-  //  Turn off solenoids
-  for (int i = 0; i<sizeof(SOLENOIDS)/sizeof(SOLENOIDS[0]); i++) digitalWrite(SOLENOIDS[i], LOW);
-  FastLED.clear();
-  FastLED.show();
-  while (true) main();
-}
-
-void Player::startInteract()
-{
-  //Serial.println("wating for I and helo");
-  bool s = false;
-  while (!s) {
-    while(Serial.available() > 0) {
-      //Serial.println("inside while");
-      byte data = Serial.read();
-      if(data == 'I') {
-        //for (int i = 0; i<arrSize; i++) Serial.println(d[i]);
-        //Serial.println("looped");
-        //Serial.println("found I!! :)");
-        startPlayingInter();
-      }
-    }
-  }
-}
 
 int Player::dig(long val, int n)
 {
@@ -95,7 +52,7 @@ void Player::startPlaying() {
   //Serial.println("helo");
   isPlaying = true;
   //Serial.println(isPlaying);
-  for (int i = 0; i<arrSize; i++) {
+  for (int i = 0; i<as; i++) {
     startTime = millis(), noteTime = startTime;
     main();
   }
@@ -106,7 +63,7 @@ void Player::stopPlaying() {
   reset();
 }
 
-unsigned long Player::play(short dd[], short as, float at, unsigned long startTime, unsigned long noteTime) {
+unsigned long Player::play(unsigned long startTime, unsigned long noteTime) {
   //Serial.println("inside play");
   int t = (millis() - startTime) / (at * 1000);
   if(t >= as) return 0;
@@ -134,23 +91,12 @@ void Player::main() {
     else if(data == 'B') {
       resetFunc();
     }
-    else if(data == 'S') {
-      Serial.println("Got S");
-      arrSize = (short)Serial.readStringUntil('X').toInt();
-      //d = new short[arrSize];
-      for(int i = 0; i < arrSize; i++)
-        d[i] = (short)Serial.readStringUntil('X').toInt();
-      arrayTime = Serial.readStringUntil('X').toFloat();
-      //Serial.println("Got data");
-      startInteract();
-      //startPlaying();
-    }
   }
 
   //PLAY
   if(isPlaying){
     //Serial.println("inside main");
-    noteTime = play(d, arrSize, arrayTime, startTime, noteTime);
+    noteTime = play(startTime, noteTime);
     if(!noteTime) stopPlaying();
   }
 }

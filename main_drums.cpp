@@ -12,12 +12,14 @@ double arrayTime = 0.0;
 
 //Test sorrend: tom low, snare, hh, tom mid, tom high, crash <-> ride
 const int midi_length = 7;
-const int midi[midi_length] = {51, 49, 40, 48, 43, 46, 47};
-//ride, crash, snare, tom high, tom low, hh, tom mid
+const int midi[midi_length] = {51, 49, 37, 47, 36, 44, 45};
+const string midiDeb[midi_length] = { "ride", "crash", "snare", "tom high", "tom low", "hh", "tom mid" };
+//wanted sorrend: tom low, snare, hh, tom mid, tom high
 const int tomArr = 192;
 
 void editFile(string str_replace)		//NEEDS EDITING
 {
+	cout << "\n\n" << str_replace;
 	ostringstream text;
 	ifstream in_file("Drums/Melody.cpp");
 
@@ -28,7 +30,7 @@ void editFile(string str_replace)		//NEEDS EDITING
 	str.replace(pos+1, pos2 - (pos+1), str_replace);
 	in_file.close();
 
-	ofstream out_file("Drums/Melody.cpp");
+	ofstream out_file("M/M.ino");
 	out_file << str;
 }
 
@@ -63,6 +65,8 @@ void writeInteract(int arr[], int as)
 
 int main()
 {
+	cout << "wanted sorrend:\nkick\nsnare\nhh\ntom low\ntom mid\n\n";
+
 	fstream dread;
 	dread.open("DrumsRead.txt", ios::in);
 	string tp;
@@ -80,7 +84,7 @@ int main()
 	//Generate empty array
 	int size = (d[dSize-1])/arrayTime +1; //length of final array: length of track / arrayTime
     
-    	string f = "\nshort d[" + to_string(size+1) + "] = {";
+    	string f = "\nshort dd[" + to_string(size+1) + "] = {";
 	string uf;
 	int of[size];
 	for (int t=0;t<size;t++) { // t+1th atTime in g
@@ -91,6 +95,7 @@ int main()
 				for (int j = 0; j<midi_length; j++) {
 					if (midi[j] == d[i-1]) {
 						uf[j+1] = '1';
+						cout << midiDeb[j] << endl;
 					}
 				}
 			}
@@ -100,7 +105,7 @@ int main()
 		uf = to_string(of[t]) + ", ";
 		f += uf;
 	}
-	f += "128};\nshort arrSize = " + to_string(size+1) + ";\nfloat arrayTime = " + to_string(arrayTime) + ";\n\n";
+	f += "128};\nshort as = " + to_string(size+1) + ";\nfloat at = " + to_string(arrayTime) + ";\n\n";
 	editFile(f);
 	writeInteract(of, size);
 	//cout << f;
