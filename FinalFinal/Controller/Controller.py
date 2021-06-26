@@ -11,8 +11,8 @@ NUMBERS = ['Number4', 'Number3', 'Number2', 'Number1']
 SCENES = ['PianoTitleScene', 'DrumTitleScene',
           'PianoScene', 'PianoScene', 'PianoScene',
           'DrumScene', 'DrumScene', 'DrumScene']
-TITLES = ['Ecuador' ''', 'Pijanoo',
-          'Zombie Nation''']
+TITLES = ['Ecuador', 'Pijanoo',
+          'Zombie Nation']
 
 
 
