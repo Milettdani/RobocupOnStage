@@ -54,7 +54,7 @@ reader.onload = function() {
 			var t = "";
 			var fw = "";
 			var pw = "";
-			if ((JSON.stringify(parsedMusic.tracks[i]).includes('isPercussion') && parsedMusic.tracks[i].isPercussion) || Object.size(parsedMusic.tracks  || !p) == 1) {
+			if (((JSON.stringify(parsedMusic.tracks[i]).includes('isPercussion') && parsedMusic.tracks[i].isPercussion) || Object.size(parsedMusic.tracks  || !p) == 1) && !singlePiano) {
 				if (d == true) {
 					t = "const double d" + "[" + Object.size(parsedMusic.tracks[i].notes) * 2 + "] = {"
 					fw = Object.size(parsedMusic.tracks[i].notes) * 2 + "\n";
