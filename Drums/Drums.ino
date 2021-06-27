@@ -1,7 +1,6 @@
 #include <FastLED.h>
 void(* resetFunc) (void) = 0;
 const byte solenoids[8] = {A0, A2, A3, A4, A5, 11, 12};
-const static byte dirPin = 6, stepPin = 7, enPin = 5;
 const static byte NUM_LEDS = 16, LED_PIN = 5; CRGB leds[NUM_LEDS];
 const byte ledRemap[8] = {4, 3, 0, 1, 5, 2, 6};
 
