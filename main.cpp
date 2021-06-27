@@ -37,13 +37,16 @@ int halfNotes(int a, int b) //Calculates distance between two notes in "half-not
 	} else if (m < 0) {
 		//cout << "monke" << endl;
 		m = -m;
+		//cout << "m: " << m << endl;
 		int c1 = a%12;
 		int c2 = 7 + a%12;
 		
 		int om = m;
 		if (om > c1) m += ceil((float)om/(12+c1));
 		if (om > c2) m += ceil((float)om/(12+c2));
+		//cout << "m2: " << m << endl;
 		m = -m;
+		//cout << "m3: " << m << "\n\n";
 	} else return 0;
 
 	return m;
@@ -86,6 +89,9 @@ void editFile(string str_replace)
 
 void movement(int startmove, int pSize, double p[])
 {
+	//cout << "expected output:\n0\n60\n0.5\n6\n-11\n1.5\n~4\n1.5\n0\n1.5\n0\n\n";
+
+
 	int pos = startmove;
 	mp[0] = 0.0;
 	mp[1] = (double)startmove;
@@ -104,7 +110,7 @@ void movement(int startmove, int pSize, double p[])
 		} else if (halfNotes(pos, p[i]) < 0) {
 			//cout << "monke 2" << endl;
 			mp[(i * 2) /3 +1] += halfNotes(pos, p[i]);
-			cout << endl << halfNotes(pos, p[i]) << "\n\n";
+			//cout << endl << halfNotes(pos, p[i]) << "\n\n";
 			mp[(i * 2) /3] = p[i+1];
 			pos += mp[(i * 2) /3 +1];
 		}
